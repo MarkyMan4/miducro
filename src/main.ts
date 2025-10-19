@@ -17,7 +17,7 @@ function gameInit()
 
     // levelSize = vec2(20, 20);
     // LJS.setCameraPos(levelSize.scale(0.5))
-    player = new Player(LJS.cameraPos, vec2(2));
+    player = new Player(LJS.cameraPos, vec2(2, 1.5));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -60,4 +60,11 @@ function gameRenderPost()
 
 ///////////////////////////////////////////////////////////////////////////////
 // Startup LittleJS Engine
-LJS.engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, ['Ants.png']);
+LJS.engineInit(
+    gameInit,
+    gameUpdate,
+    gameUpdatePost,
+    gameRender,
+    gameRenderPost,
+    ['Ants.png', 'survivor1_machine.png'],
+);

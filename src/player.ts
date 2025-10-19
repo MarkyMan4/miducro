@@ -1,4 +1,4 @@
-import { drawTile, EngineObject, vec2, Vector2, tile } from "littlejsengine";
+import { drawTile, EngineObject, vec2, Vector2, tile, mousePos } from "littlejsengine";
 
 const MOVE_SPEED = 0.25;
 
@@ -9,17 +9,19 @@ class Player extends EngineObject {
         super(pos, size);
 
         this.moveDirection = vec2(0);
+        this.tileInfo = tile(0, vec2(51, 43), 1);
     }
 
     update() {
         // make move speed the same in all directions, otherwise player moves faster when going diagonal
-        this.moveDirection = this.moveDirection.clampLength(MOVE_SPEED);
-        console.log(this.moveDirection)
+        this.moveDirection = this.moveDirection.clampLength(1).scale(MOVE_SPEED);
         this.pos = this.pos.add(this.moveDirection);
+
+        this.angle = -Math.atan2(this.pos.y - mousePos.y, this.pos.x - mousePos.x) + Math.PI;
     }
 
     render() {
-        drawTile(this.pos, this.size, tile(0, 90));
+        drawTile(this.pos, this.size, this.tileInfo, undefined, this.angle);
     }
 }
 
