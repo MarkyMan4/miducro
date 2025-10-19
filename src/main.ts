@@ -4,7 +4,6 @@ import * as LJS from 'littlejsengine';
 import { vec2, hsl, tile } from 'littlejsengine';
 
 const backgroundColor = hsl(1.27, 0.51, 0.17);
-let levelSize;
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit()
