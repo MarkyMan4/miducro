@@ -3,9 +3,12 @@
 import * as LJS from 'littlejsengine';
 import { vec2, hsl } from 'littlejsengine';
 import Player from './player';
+import Bug from './bug';
 
 const backgroundColor = hsl(1.27, 0.51, 0.17);
+
 let player: Player;
+let bugs: Bug[] = [];
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit()
@@ -18,6 +21,12 @@ function gameInit()
     // levelSize = vec2(20, 20);
     // LJS.setCameraPos(levelSize.scale(0.5))
     player = new Player(LJS.cameraPos, vec2(2, 1.5));
+
+    for(let i = 0; i < 50; i++) {
+        let pos = LJS.randVec2(LJS.canvasFixedSize.x)
+        let bug = new Bug(vec2(i), vec2(2));
+        bugs.push(bug)
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,9 +37,15 @@ function gameUpdate()
     // if(LJS.keyWasPressed("Space")) {
     //     console.log("space pressed")
     // }
+    if (LJS.mouseIsDown(0)) {
+        // spawn projectiles
+    }
 
     // set player move direction - wasd
     player.moveDirection = LJS.keyDirection();
+
+    // bugs move toward player
+    bugs.forEach(bug => bug.targetPosition = player.pos);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

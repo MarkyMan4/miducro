@@ -1,8 +1,28 @@
-import { EngineObject, Vector2 } from "littlejsengine";
+import { drawTile, EngineObject, tile, vec2, Vector2 } from "littlejsengine";
+
+const MOVE_SPEED = 0.1;
 
 class Bug extends EngineObject {
+    // position the bug is moving to, this gets updated to player position as the game is played
+    public targetPosition: Vector2;
+
     constructor(pos: Vector2, size: Vector2) {
         super(pos, size);
+        this.setCollision(undefined, undefined, true);
+        this.targetPosition = vec2(0, 0);
+    }
+
+    update() {
+        // calculate direction to move based on target pos
+        let deltaX = this.targetPosition.x - this.pos.x;
+        let deltaY = this.targetPosition.y - this.pos.y;
+        let moveVector = vec2(deltaX, deltaY).clampLength(1).scale(MOVE_SPEED);
+
+        this.pos = this.pos.add(moveVector);
+    }
+
+    render() {
+        drawTile(this.pos, this.size, tile(0, 90));
     }
 }
 
