@@ -29,6 +29,17 @@ class Bug extends EngineObject {
     render() {
         drawTile(this.pos, this.size, tile(0, vec2(60, 80), 0, 15));
     }
+
+    collideWithObject(object: EngineObject): boolean {
+        if (object.constructor.name === 'Bug') {
+            // do something here to prevent bugs from completely overlapping
+            // let deltaX = object.pos.x - this.pos.x;
+            // let deltaY = object.pos.y - this.pos.y;
+            // this.pos = 
+            return false;
+        }
+        return true;
+    }
 }
 
 export default Bug;
