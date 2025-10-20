@@ -1,4 +1,4 @@
-import { drawTile, EngineObject, tile, vec2, Vector2 } from "littlejsengine";
+import { drawTile, EngineObject, randInt, randSign, tile, vec2, Vector2 } from "littlejsengine";
 
 const MOVE_SPEED = 0.1;
 
@@ -15,11 +15,13 @@ class Bug extends EngineObject {
     update() {
         super.update();
 
-        // this.velocity = vec2(0);
+        // add some randomness to movement so the bugs don't all clump up
+        const distance = Math.sqrt(Math.pow(this.targetPosition.x - this.pos.x, 2) + Math.pow(this.targetPosition.y - this.pos.y, 2));
+        let randomness = Math.min(distance, 25);
 
         // calculate direction to move based on target pos
-        let deltaX = this.targetPosition.x - this.pos.x;
-        let deltaY = this.targetPosition.y - this.pos.y;
+        let deltaX = (this.targetPosition.x + (randInt(randomness) * randSign())) - this.pos.x;
+        let deltaY = (this.targetPosition.y + (randInt(randomness) * randSign())) - this.pos.y;
         let moveVector = vec2(deltaX, deltaY).normalize(1).scale(MOVE_SPEED);
         this.velocity = moveVector;
 
