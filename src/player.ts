@@ -10,6 +10,7 @@ class Player extends EngineObject {
 
         this.moveDirection = vec2(0);
         this.tileInfo = tile(0, vec2(51, 43), 1);
+        this.setCollision();
     }
 
     update() {
@@ -22,6 +23,10 @@ class Player extends EngineObject {
 
     render() {
         drawTile(this.pos, this.size, this.tileInfo, undefined, this.angle);
+    }
+
+    collideWithObject(object: EngineObject): boolean {
+        return true;
     }
 }
 

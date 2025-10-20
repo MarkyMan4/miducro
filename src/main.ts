@@ -22,9 +22,8 @@ function gameInit()
     // LJS.setCameraPos(levelSize.scale(0.5))
     player = new Player(LJS.cameraPos, vec2(2, 1.5));
 
-    for(let i = 0; i < 50; i++) {
-        let pos = LJS.randVec2(LJS.canvasFixedSize.x)
-        let bug = new Bug(vec2(i), vec2(2));
+    for(let i = 0; i < 10; i++) {
+        let bug = new Bug(vec2(i), vec2(2, 2.5));
         bugs.push(bug)
     }
 }
