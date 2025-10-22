@@ -10,7 +10,9 @@ const backgroundColor = hsl(1.27, 0.51, 0.17);
 
 let player: Player;
 let bugs: Bug[] = [];
-let projectiles: Projectile[] = [];
+
+let timeSinceLastShot = 0;
+let fireRate = 0.25;
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit()
@@ -38,9 +40,12 @@ function gameUpdate()
     // if(LJS.keyWasPressed("Space")) {
     //     console.log("space pressed")
     // }
-    if (LJS.mouseIsDown(0)) {
+    timeSinceLastShot += LJS.timeDelta;
+
+    if (LJS.mouseIsDown(0) && timeSinceLastShot >= fireRate) {
         // spawn projectiles
-        projectiles.push(new Projectile(player.pos, LJS.mousePos));
+        new Projectile(player.pos, LJS.mousePos);
+        timeSinceLastShot = 0;
     }
 
     // set player move direction - wasd
