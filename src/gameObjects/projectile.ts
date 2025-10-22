@@ -1,14 +1,16 @@
-import { drawCircle, EngineObject, hsl, vec2, Vector2 } from "littlejsengine";
+import { drawCircle, EngineObject, hsl, Vector2 } from "littlejsengine";
 
 class Projectile extends EngineObject {
     private startPos: Vector2;
+    public damage: number;
 
-    constructor(pos: Vector2, targetPos: Vector2) {
-        super(pos, vec2(0.5));
+    constructor(pos: Vector2, size: Vector2, targetPos: Vector2, damage: number) {
+        super(pos, size);
 
         this.startPos = pos;
+        this.damage = damage;
         this.velocity = targetPos.subtract(pos).normalize(0.5);
-        this.setCollision()
+        this.setCollision();
     }
 
     update() {

@@ -26,7 +26,7 @@ function gameInit()
     // LJS.setCameraPos(levelSize.scale(0.5))
     player = new Player(LJS.cameraPos, vec2(2, 1.5));
 
-    for(let i = 0; i < 10; i++) {
+    for(let i = 0; i < 20; i++) {
         let bug = new Bug(vec2(i), vec2(0.75, 1));
         bugs.push(bug)
     }
@@ -44,12 +44,19 @@ function gameUpdate()
 
     if (LJS.mouseIsDown(0) && timeSinceLastShot >= fireRate) {
         // spawn projectiles
-        new Projectile(player.pos, LJS.mousePos);
+        new Projectile(player.pos, vec2(0.5), LJS.mousePos, 33);
         timeSinceLastShot = 0;
     }
 
     // set player move direction - wasd
     player.moveDirection = LJS.keyDirection();
+
+    // remove bugs that have been destroyed
+    for (let i = bugs.length - 1; i >= 0; i--) {
+        if(bugs[i].destroyed) {
+            bugs.splice(i, 1);
+        }
+    }
 
     // bugs move toward player
     bugs.forEach(bug => bug.targetPosition = player.pos);

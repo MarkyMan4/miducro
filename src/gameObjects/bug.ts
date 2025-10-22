@@ -1,15 +1,18 @@
 import { drawTile, EngineObject, randInt, randSign, tile, vec2, Vector2 } from "littlejsengine";
+import type Projectile from "./projectile";
 
 const MOVE_SPEED = 0.1;
 
 class Bug extends EngineObject {
     // position the bug is moving to, this gets updated to player position as the game is played
     public targetPosition: Vector2;
+    public health: number;
 
     constructor(pos: Vector2, size: Vector2) {
         super(pos, size);
         this.setCollision(true, true, false);
         this.targetPosition = vec2(0, 0);
+        this.health = 100;
     }
 
     update() {
@@ -32,6 +35,20 @@ class Bug extends EngineObject {
 
     render() {
         drawTile(this.pos, vec2(2, 2.5), tile(0, vec2(60, 80), 0, 15));
+    }
+
+    collideWithObject(object: EngineObject): boolean {
+        if (object.constructor.name === 'Projectile') {
+            let proj = object as Projectile;
+            this.health -= proj.damage;
+            proj.destroy();
+
+            if (this.health <= 0) {
+                this.destroy();
+            }
+            
+        }
+        return true;
     }
 }
 
