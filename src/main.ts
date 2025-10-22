@@ -2,13 +2,15 @@
 
 import * as LJS from 'littlejsengine';
 import { vec2, hsl } from 'littlejsengine';
-import Player from './player';
-import Bug from './bug';
+import Player from './gameObjects/player';
+import Bug from './gameObjects/bug';
+import Projectile from './gameObjects/projectile';
 
 const backgroundColor = hsl(1.27, 0.51, 0.17);
 
 let player: Player;
 let bugs: Bug[] = [];
+let projectiles: Projectile[] = [];
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit()
@@ -38,6 +40,7 @@ function gameUpdate()
     // }
     if (LJS.mouseIsDown(0)) {
         // spawn projectiles
+        projectiles.push(new Projectile(player.pos, LJS.mousePos));
     }
 
     // set player move direction - wasd

@@ -24,10 +24,6 @@ class Player extends EngineObject {
     render() {
         drawTile(this.pos, this.size, this.tileInfo, undefined, this.angle);
     }
-
-    collideWithObject(object: EngineObject): boolean {
-        return true;
-    }
 }
 
 export default Player;
