@@ -23,7 +23,7 @@ function gameInit()
     player = new Player(LJS.cameraPos, vec2(2, 1.5));
 
     for(let i = 0; i < 10; i++) {
-        let bug = new Bug(vec2(i), vec2(2, 2.5));
+        let bug = new Bug(vec2(i), vec2(0.75, 1));
         bugs.push(bug)
     }
 }
