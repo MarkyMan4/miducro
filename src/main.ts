@@ -14,6 +14,11 @@ let bugs: Bug[] = [];
 let timeSinceLastShot = 0;
 let fireRate = 0.25;
 
+let gameStarted = false;
+let wave = 1;
+let baseEnemiesToSpawn = 10; // multiply by wave number to get enemies per wave
+let enemiesKilled = 0; // resets each wave, know it's a new wave when this reaches zero
+
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit()
 {
@@ -40,6 +45,14 @@ function gameUpdate()
     // if(LJS.keyWasPressed("Space")) {
     //     console.log("space pressed")
     // }
+    if (!gameStarted) {
+        if(LJS.keyWasPressed("Space")) {
+            gameStarted = true;
+        }
+
+        return;
+    }
+
     timeSinceLastShot += LJS.timeDelta;
 
     if (LJS.mouseIsDown(0) && timeSinceLastShot >= fireRate) {
@@ -84,7 +97,14 @@ function gameRenderPost()
 {
     // called after objects are rendered
     // draw effects or hud that appear above all objects
-    // LJS.drawTextScreen('Hello World!', LJS.mainCanvasSize.scale(.5), 80);
+    if (!gameStarted) {
+        LJS.drawRect(vec2(0, -3), vec2(30, 10), hsl(0, 0, 0));
+
+        const screenCenter = LJS.mainCanvasSize.scale(0.5);
+        LJS.drawTextScreen('Press space to start', screenCenter, 80);
+        LJS.drawTextScreen('WASD to move', vec2(screenCenter.x, screenCenter.y + 100), 40);
+        LJS.drawTextScreen('Point and click to shoot', vec2(screenCenter.x, screenCenter.y + 150), 40);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

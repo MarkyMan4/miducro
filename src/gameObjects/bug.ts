@@ -25,8 +25,6 @@ class Bug extends EngineObject {
         // calculate direction to move based on target pos
         let deltaX = (this.targetPosition.x + (randInt(randomness) * randSign())) - this.pos.x;
         let deltaY = (this.targetPosition.y + (randInt(randomness) * randSign())) - this.pos.y;
-        // let deltaX = this.targetPosition.x - this.pos.x;
-        // let deltaY = this.targetPosition.y - this.pos.y;
         let moveVector = vec2(deltaX, deltaY).normalize(1).scale(MOVE_SPEED);
         this.velocity = moveVector;
 
@@ -47,8 +45,8 @@ class Bug extends EngineObject {
             if (this.health <= 0) {
                 this.destroy();
             }
-            
         }
+
         return true;
     }
 }
