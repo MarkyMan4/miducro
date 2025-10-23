@@ -30,11 +30,12 @@ class Bug extends EngineObject {
         let moveVector = vec2(deltaX, deltaY).normalize(1).scale(MOVE_SPEED);
         this.velocity = moveVector;
 
-        // this.pos = this.pos.add(moveVector);
+        // point in the direction of movement
+        this.angle = -Math.atan2(this.pos.y - this.targetPosition.y, this.pos.x - this.targetPosition.x) + (Math.PI / 2);
     }
 
     render() {
-        drawTile(this.pos, vec2(2, 2.5), tile(0, vec2(60, 80), 0, 15));
+        drawTile(this.pos, vec2(2, 2.5), tile(0, vec2(60, 80), 0, 15), undefined, this.angle);
     }
 
     collideWithObject(object: EngineObject): boolean {
