@@ -16,8 +16,40 @@ let fireRate = 0.25;
 
 let gameStarted = false;
 let wave = 1;
-let baseEnemiesToSpawn = 10; // multiply by wave number to get enemies per wave
-let enemiesKilled = 0; // resets each wave, know it's a new wave when this reaches zero
+let baseEnemiesToSpawn = 5; // multiply by wave number to get enemies per wave
+let bugsSpawnedThisWave = 0;
+let waveInProgress = false; // I know a wave is over if enemiesSpawnedThis wave === enemiesToSpawn() and the length of the bugs array is 0
+let timeSinceBugSpawn = 0;
+let spawnRate = 0.25;
+
+// calculate the number of enemies that should be spawned this wave 
+function bugsToSpawn(): number {
+    return wave * baseEnemiesToSpawn;
+}
+
+// spawn count bugs at random spots on the edge of the screen
+function spawnBugs(count: number) {
+    // TODO make it so I can spawn "mega bugs" - bigger bugs with more health
+    for (let i = 0; i < count; i++) {
+        let x;
+        let y;
+
+        if (LJS.randInt(2) === 0) {
+            // spawn on top or bottom of screen
+            x = LJS.randInt(LJS.mainCanvasSize.x / LJS.cameraScale / 2) * (LJS.randInt(2) === 0 ? -1 : 1);
+            y = LJS.mainCanvasSize.y / LJS.cameraScale / 2 * (LJS.randInt(2) === 0 ? -1 : 1);
+        }
+        else {
+            // spawn on left or right of screen
+            x = LJS.mainCanvasSize.x / LJS.cameraScale / 2 * (LJS.randInt(2) === 0 ? -1 : 1);
+            y = LJS.randInt(LJS.mainCanvasSize.y / LJS.cameraScale / 2) * (LJS.randInt(2) === 0 ? -1 : 1);
+        }
+
+        bugs.push(
+            new Bug(vec2(x, y), vec2(0.75, 1))
+        );
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit()
@@ -30,11 +62,6 @@ function gameInit()
     // levelSize = vec2(20, 20);
     // LJS.setCameraPos(levelSize.scale(0.5))
     player = new Player(LJS.cameraPos, vec2(2, 1.5));
-
-    for(let i = 0; i < 20; i++) {
-        let bug = new Bug(vec2(i, LJS.mainCanvasSize.y / LJS.cameraScale / 2), vec2(0.75, 1));
-        bugs.push(bug)
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -48,31 +75,60 @@ function gameUpdate()
     if (!gameStarted) {
         if(LJS.keyWasPressed("Space")) {
             gameStarted = true;
+            waveInProgress = true;
         }
 
         return;
     }
 
-    timeSinceLastShot += LJS.timeDelta;
-
-    if (LJS.mouseIsDown(0) && timeSinceLastShot >= fireRate) {
-        // spawn projectiles
-        new Projectile(player.pos, vec2(0.5), LJS.mousePos, 33);
-        timeSinceLastShot = 0;
-    }
-
-    // set player move direction - wasd
-    player.moveDirection = LJS.keyDirection();
-
-    // remove bugs that have been destroyed
-    for (let i = bugs.length - 1; i >= 0; i--) {
-        if(bugs[i].destroyed) {
-            bugs.splice(i, 1);
+    if (!waveInProgress) {
+        if(LJS.keyWasPressed("Space")) {
+            wave++;
+            waveInProgress = true;
+            bugsSpawnedThisWave = 0;
         }
+
+        return;
     }
 
-    // bugs move toward player
-    bugs.forEach(bug => bug.targetPosition = player.pos);
+    if (gameStarted && waveInProgress) {
+        // check if wave is over
+        if (bugs.length === 0 && bugsSpawnedThisWave >= bugsToSpawn()) {
+            waveInProgress = false;
+        }
+
+        // spawn bugs
+        timeSinceBugSpawn += LJS.timeDelta;
+
+        if (timeSinceBugSpawn >= spawnRate && bugsSpawnedThisWave < bugsToSpawn()) {
+            let bugsToSpawn = 2;
+            spawnBugs(bugsToSpawn);
+            bugsSpawnedThisWave += bugsToSpawn;
+            timeSinceBugSpawn = 0;
+        }
+
+        // handle shooting
+        timeSinceLastShot += LJS.timeDelta;
+
+        if (LJS.mouseIsDown(0) && timeSinceLastShot >= fireRate) {
+            // spawn projectiles
+            new Projectile(player.pos, vec2(0.5), LJS.mousePos, 33);
+            timeSinceLastShot = 0;
+        }
+
+        // set player move direction - wasd
+        player.moveDirection = LJS.keyDirection();
+
+        // remove bugs that have been destroyed
+        for (let i = bugs.length - 1; i >= 0; i--) {
+            if(bugs[i].destroyed) {
+                bugs.splice(i, 1);
+            }
+        }
+
+        // bugs move toward player
+        bugs.forEach(bug => bug.targetPosition = player.pos);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -89,7 +145,6 @@ function gameRender()
     // draw any background effects that appear behind objects
     // LJS.drawTile(LJS.cameraPos, vec2(3), tile(0, 90))
     // LJS.drawTile(vec2(LJS.cameraPos.x + 2, LJS.cameraPos.y), vec2(3), tile(3, 90))
-    // player.ren
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -97,13 +152,18 @@ function gameRenderPost()
 {
     // called after objects are rendered
     // draw effects or hud that appear above all objects
+    const screenCenter = LJS.mainCanvasSize.scale(0.5);
+
     if (!gameStarted) {
         LJS.drawRect(vec2(0, -3), vec2(30, 10), hsl(0, 0, 0));
 
-        const screenCenter = LJS.mainCanvasSize.scale(0.5);
         LJS.drawTextScreen('Press space to start', screenCenter, 80);
         LJS.drawTextScreen('WASD to move', vec2(screenCenter.x, screenCenter.y + 100), 40);
         LJS.drawTextScreen('Point and click to shoot', vec2(screenCenter.x, screenCenter.y + 150), 40);
+    }
+    else if (!waveInProgress) {
+        // TODO show UI elements for selecting upgrade
+        LJS.drawTextScreen('space to start next wave', screenCenter, 80);
     }
 }
 
