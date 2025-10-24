@@ -16,11 +16,17 @@ let fireRate = 0.25;
 
 let gameStarted = false;
 let wave = 1;
-let baseEnemiesToSpawn = 5; // multiply by wave number to get enemies per wave
+let baseEnemiesToSpawn = 1; // multiply by wave number to get enemies per wave
 let bugsSpawnedThisWave = 0;
 let waveInProgress = false; // I know a wave is over if enemiesSpawnedThis wave === enemiesToSpawn() and the length of the bugs array is 0
 let timeSinceBugSpawn = 0;
 let spawnRate = 0.25;
+
+// UI
+let upgradeMenu: LJS.UIObject;
+let upgrade1: LJS.UIButton;
+let upgrade2: LJS.UIButton;
+let upgrade3: LJS.UIButton;
 
 // calculate the number of enemies that should be spawned this wave 
 function bugsToSpawn(): number {
@@ -51,6 +57,13 @@ function spawnBugs(count: number) {
     }
 }
 
+function startNextWave() {
+    upgradeMenu.visible = false;
+    wave++;
+    waveInProgress = true;
+    bugsSpawnedThisWave = 0;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit()
 {
@@ -62,6 +75,30 @@ function gameInit()
     // levelSize = vec2(20, 20);
     // LJS.setCameraPos(levelSize.scale(0.5))
     player = new Player(LJS.cameraPos, vec2(2, 1.5));
+
+    // create the upgrade menu and hide it, will show again at the end of the round
+    new LJS.UISystemPlugin();
+    LJS.uiSystem.defaultCornerRadius = 5;
+
+    upgradeMenu = new LJS.UIObject(LJS.mainCanvasSize.scale(0.5), vec2(600, 450));
+    upgradeMenu.addChild(new LJS.UIText(vec2(0, -120), vec2(400, 50), 'Choose an upgrade'));
+
+    upgrade1 = new LJS.UIButton(vec2(0, -10), vec2(300, 50));
+    upgrade1.textHeight = 30;
+    upgradeMenu.addChild(upgrade1);
+    upgrade1.onClick = () => {console.log('upgrade1 selected'); startNextWave();};
+
+    upgrade2 = new LJS.UIButton(vec2(0, 50), vec2(300, 50));
+    upgrade2.textHeight = 30;
+    upgradeMenu.addChild(upgrade2);
+    upgrade2.onClick = () => {console.log('upgrade2 selected'); startNextWave();};
+
+    upgrade3 = new LJS.UIButton(vec2(0, 110), vec2(300, 50));
+    upgrade3.textHeight = 30;
+    upgradeMenu.addChild(upgrade3);
+    upgrade3.onClick = () => {console.log('upgrade3 selected'); startNextWave();};
+
+    upgradeMenu.visible = false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -73,7 +110,7 @@ function gameUpdate()
     //     console.log("space pressed")
     // }
     if (!gameStarted) {
-        if(LJS.keyWasPressed("Space")) {
+        if(LJS.keyWasPressed('Space')) {
             gameStarted = true;
             waveInProgress = true;
         }
@@ -81,22 +118,7 @@ function gameUpdate()
         return;
     }
 
-    if (!waveInProgress) {
-        if(LJS.keyWasPressed("Space")) {
-            wave++;
-            waveInProgress = true;
-            bugsSpawnedThisWave = 0;
-        }
-
-        return;
-    }
-
     if (gameStarted && waveInProgress) {
-        // check if wave is over
-        if (bugs.length === 0 && bugsSpawnedThisWave >= bugsToSpawn()) {
-            waveInProgress = false;
-        }
-
         // spawn bugs
         timeSinceBugSpawn += LJS.timeDelta;
 
@@ -161,9 +183,15 @@ function gameRenderPost()
         LJS.drawTextScreen('WASD to move', vec2(screenCenter.x, screenCenter.y + 100), 40);
         LJS.drawTextScreen('Point and click to shoot', vec2(screenCenter.x, screenCenter.y + 150), 40);
     }
-    else if (!waveInProgress) {
-        // TODO show UI elements for selecting upgrade
-        LJS.drawTextScreen('space to start next wave', screenCenter, 80);
+
+
+    // check if wave is over and display upgrade menu
+    if (bugs.length === 0 && bugsSpawnedThisWave >= bugsToSpawn()) {
+        waveInProgress = false;
+        upgradeMenu.visible = true;
+        upgrade1.text = 'option 1';
+        upgrade2.text = 'option 2';
+        upgrade3.text = 'option 3';
     }
 }
 

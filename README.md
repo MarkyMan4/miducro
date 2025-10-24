@@ -29,7 +29,7 @@ Other ideas
 ---
 
 todo
-- [ ] particle animation when hitting and killing bugs
+- [x] particle animation when hitting and killing bugs
 - [ ] menu screen to select upgrade between waves
 - [ ] sound effects/music
 - [ ] make player collide with edge of screen

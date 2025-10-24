@@ -1,4 +1,4 @@
-import { drawTile, EngineObject, randInt, randSign, tile, vec2, Vector2 } from "littlejsengine";
+import { drawTile, EngineObject, hsl, ParticleEmitter, randInt, randSign, tile, vec2, Vector2 } from "littlejsengine";
 import type Projectile from "./projectile";
 
 const MOVE_SPEED = 0.1;
@@ -41,6 +41,20 @@ class Bug extends EngineObject {
             let proj = object as Projectile;
             this.health -= proj.damage;
             proj.destroy();
+
+            new ParticleEmitter(
+                this.pos,
+                undefined,
+                1, 0.1, 100, Math.PI,
+                undefined,
+                hsl(0, 1, 0.6), 
+                hsl(0, 1, 0.6), 
+                hsl(0, 1, 0.6), 
+                hsl(0, 1, 0.6), 
+                undefined,
+                0.25,
+                0,
+            );
 
             if (this.health <= 0) {
                 this.destroy();
