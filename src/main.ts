@@ -16,7 +16,7 @@ let fireRate = 0.25;
 
 let gameStarted = false;
 let wave = 1;
-let baseEnemiesToSpawn = 1; // multiply by wave number to get enemies per wave
+let baseEnemiesToSpawn = 5; // multiply by wave number to get enemies per wave
 let bugsSpawnedThisWave = 0;
 let waveInProgress = false; // I know a wave is over if enemiesSpawnedThis wave === enemiesToSpawn() and the length of the bugs array is 0
 let timeSinceBugSpawn = 0;
