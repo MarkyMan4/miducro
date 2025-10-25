@@ -4,20 +4,16 @@ import * as LJS from 'littlejsengine';
 import { vec2, hsl } from 'littlejsengine';
 import Player from './gameObjects/player';
 import Bug from './gameObjects/bug';
-import Projectile from './gameObjects/projectile';
+import Weapon from './gameObjects/weapon';
+import { type Upgrade, upgradeOptions } from './upgrades';
 
 const backgroundColor = hsl(1.27, 0.51, 0.17);
 
 let player: Player;
 let bugs: Bug[] = [];
 
-let timeSinceLastShot = 0;
-let fireRate = 0.5;
-let projectileDamage = 25;
-let projectileRange = 20;
-
 let gameStarted = false;
-let wave = 1;
+let wave = 0;
 let baseEnemiesToSpawn = 5; // multiply by wave number to get enemies per wave
 let bugsSpawnedThisWave = 0;
 let waveInProgress = false; // I know a wave is over if enemiesSpawnedThis wave === enemiesToSpawn() and the length of the bugs array is 0
@@ -61,9 +57,30 @@ function spawnBugs(count: number) {
 
 function startNextWave() {
     upgradeMenu.visible = false;
-    wave++;
     waveInProgress = true;
     bugsSpawnedThisWave = 0;
+    wave++;
+
+    // pick three random options for the upgrade menu to show at the end of this wave
+    const options: Upgrade[] = [];
+    while (options.length < 3) {
+        const randOption = upgradeOptions[Math.floor(Math.random() * upgradeOptions.length)];
+        if (!options.includes(randOption)) {
+            options.push(randOption);
+        }
+    }
+
+    const onUpgradeSelect = (weapon: Weapon, upgradeFunc: (weapon: Weapon) => void) => {
+        upgradeFunc(weapon);
+        startNextWave();
+    }
+
+    upgrade1.text = options[0].displayName;
+    upgrade2.text = options[1].displayName;
+    upgrade3.text = options[2].displayName;
+    upgrade1.onClick = () => onUpgradeSelect(player.weapon, options[0].upgradeFunc);
+    upgrade2.onClick = () => onUpgradeSelect(player.weapon, options[1].upgradeFunc);
+    upgrade3.onClick = () => onUpgradeSelect(player.weapon, options[2].upgradeFunc);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -74,9 +91,12 @@ function gameInit()
     LJS.setCanvasFixedSize(vec2(1920, 1080));
     LJS.setCanvasClearColor(backgroundColor);
 
-    // levelSize = vec2(20, 20);
-    // LJS.setCameraPos(levelSize.scale(0.5))
-    player = new Player(LJS.cameraPos, vec2(2, 1.5));
+    player = new Player(
+        LJS.cameraPos,
+        vec2(2, 1.5),
+        new Weapon(25, 15, 0.5, 1, hsl(0.175, 0.64, 0.6))
+    );
+
 
     // create the upgrade menu and hide it, will show again at the end of the round
     new LJS.UISystemPlugin();
@@ -88,17 +108,14 @@ function gameInit()
     upgrade1 = new LJS.UIButton(vec2(0, -10), vec2(300, 50));
     upgrade1.textHeight = 30;
     upgradeMenu.addChild(upgrade1);
-    upgrade1.onClick = () => {console.log('upgrade1 selected'); startNextWave();};
 
     upgrade2 = new LJS.UIButton(vec2(0, 50), vec2(300, 50));
     upgrade2.textHeight = 30;
     upgradeMenu.addChild(upgrade2);
-    upgrade2.onClick = () => {console.log('upgrade2 selected'); startNextWave();};
 
     upgrade3 = new LJS.UIButton(vec2(0, 110), vec2(300, 50));
     upgrade3.textHeight = 30;
     upgradeMenu.addChild(upgrade3);
-    upgrade3.onClick = () => {console.log('upgrade3 selected'); startNextWave();};
 
     upgradeMenu.visible = false;
 }
@@ -108,13 +125,10 @@ function gameUpdate()
 {
     // called every frame at 60 frames per second
     // handle input and update the game state
-    // if(LJS.keyWasPressed("Space")) {
-    //     console.log("space pressed")
-    // }
     if (!gameStarted) {
         if(LJS.keyWasPressed('Space')) {
             gameStarted = true;
-            waveInProgress = true;
+            startNextWave();
         }
 
         return;
@@ -132,12 +146,8 @@ function gameUpdate()
         }
 
         // handle shooting
-        timeSinceLastShot += LJS.timeDelta;
-
-        if (LJS.mouseIsDown(0) && timeSinceLastShot >= fireRate) {
-            // spawn projectiles
-            new Projectile(player.pos, projectileDamage / 100, LJS.mousePos, projectileDamage, projectileRange);
-            timeSinceLastShot = 0;
+        if (LJS.mouseIsDown(0)) {
+            player.fire(LJS.mousePos);
         }
 
         // set player move direction - wasd
@@ -188,12 +198,9 @@ function gameRenderPost()
 
 
     // check if wave is over and display upgrade menu
-    if (bugs.length === 0 && bugsSpawnedThisWave >= bugsToSpawn()) {
+    if (wave > 0 && bugs.length === 0 && bugsSpawnedThisWave >= bugsToSpawn()) {
         waveInProgress = false;
         upgradeMenu.visible = true;
-        upgrade1.text = 'option 1';
-        upgrade2.text = 'option 2';
-        upgrade3.text = 'option 3';
     }
 }
 

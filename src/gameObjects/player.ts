@@ -1,13 +1,16 @@
-import { drawTile, EngineObject, vec2, Vector2, tile, mousePos } from "littlejsengine";
+import { drawTile, EngineObject, vec2, Vector2, tile, mousePos, timeDelta } from "littlejsengine";
+import type Weapon from "./weapon";
 
 const MOVE_SPEED = 0.25;
 
 class Player extends EngineObject {
     public moveDirection: Vector2;
+    public weapon: Weapon;
 
-    constructor(pos: Vector2, size: Vector2) {
+    constructor(pos: Vector2, size: Vector2, weapon: Weapon) {
         super(pos, size);
 
+        this.weapon = weapon;
         this.moveDirection = vec2(0);
         this.tileInfo = tile(0, vec2(51, 43), 1);
         this.setCollision();
@@ -19,6 +22,13 @@ class Player extends EngineObject {
         this.pos = this.pos.add(this.moveDirection);
 
         this.angle = -Math.atan2(this.pos.y - mousePos.y, this.pos.x - mousePos.x) + Math.PI;
+
+        // update weapon
+        this.weapon.timeSinceLastShot += timeDelta;
+    }
+
+    fire(target: Vector2) {
+        this.weapon.fire(this.pos, target);
     }
 
     render() {
