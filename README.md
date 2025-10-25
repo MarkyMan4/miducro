@@ -25,6 +25,7 @@ Other ideas
   to outrun bugs with increasing damage
 - when the player takes damage, ~2 second of being invulnerable before taking damange again
 - some bugs could shoot projectiles
+- skip upgrade this round to get to select three upgrades in the next round
 
 ---
 

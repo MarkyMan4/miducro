@@ -12,7 +12,9 @@ let player: Player;
 let bugs: Bug[] = [];
 
 let timeSinceLastShot = 0;
-let fireRate = 0.25;
+let fireRate = 0.5;
+let projectileDamage = 25;
+let projectileRange = 20;
 
 let gameStarted = false;
 let wave = 1;
@@ -134,7 +136,7 @@ function gameUpdate()
 
         if (LJS.mouseIsDown(0) && timeSinceLastShot >= fireRate) {
             // spawn projectiles
-            new Projectile(player.pos, vec2(0.5), LJS.mousePos, 33);
+            new Projectile(player.pos, projectileDamage / 100, LJS.mousePos, projectileDamage, projectileRange);
             timeSinceLastShot = 0;
         }
 
