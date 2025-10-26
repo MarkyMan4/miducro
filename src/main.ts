@@ -144,6 +144,11 @@ function gameUpdate()
         return;
     }
 
+    if (player.health <= 0) {
+        player.destroy();
+        return;
+    }
+
     if (gameStarted && waveInProgress) {
         // spawn bugs
         timeSinceBugSpawn += LJS.timeDelta;
@@ -206,6 +211,11 @@ function gameRenderPost()
         LJS.drawTextScreen('Point and click to shoot', vec2(screenCenter.x, screenCenter.y + 150), 40);
 
         return;
+    }
+
+    if (player.health <= 0) {
+        LJS.drawTextScreen('Game Over', screenCenter, 80);
+        LJS.drawTextScreen(`You survived until wave ${wave}`, vec2(screenCenter.x, screenCenter.y + 100), 40);
     }
 
     // show the wave number and player health
