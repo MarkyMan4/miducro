@@ -15,7 +15,7 @@ export const upgradeOptions: Upgrade[] = [
     },
     {
         displayName: 'fire rate up',
-        upgradeFunc: (weapon: Weapon) => weapon.fireRate -= 0.1,
+        upgradeFunc: (weapon: Weapon) => weapon.fireRate -= 0.05,
     },
     {
         displayName: 'range up',
@@ -23,7 +23,7 @@ export const upgradeOptions: Upgrade[] = [
     },
     {
         displayName: 'shot speed up',
-        upgradeFunc: (weapon: Weapon) => weapon.projectileSpeed += 0.05,
+        upgradeFunc: (weapon: Weapon) => weapon.projectileSpeed += 0.1,
     },
     {
         displayName: 'more bullets',

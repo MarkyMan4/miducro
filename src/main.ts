@@ -6,6 +6,7 @@ import Player from './gameObjects/player';
 import Bug from './gameObjects/bug';
 import Weapon from './gameObjects/weapon';
 import { type Upgrade, upgradeOptions } from './upgrades';
+import soundEffects from './sounds';
 
 const backgroundColor = hsl(1.27, 0.51, 0.17);
 
@@ -71,6 +72,7 @@ function startNextWave() {
     }
 
     const onUpgradeSelect = (weapon: Weapon, upgradeFunc: (weapon: Weapon) => void) => {
+        soundEffects.upgrade.play();
         upgradeFunc(weapon);
         startNextWave();
     }
@@ -195,12 +197,17 @@ function gameRenderPost()
         LJS.drawTextScreen('Press space to start', screenCenter, 80);
         LJS.drawTextScreen('WASD to move', vec2(screenCenter.x, screenCenter.y + 100), 40);
         LJS.drawTextScreen('Point and click to shoot', vec2(screenCenter.x, screenCenter.y + 150), 40);
+
+        return;
     }
 
+    // show the wave number
+    LJS.drawTextScreen(`Wave ${wave}`, vec2(100, 40), 50)
 
     // check if wave is over and display upgrade menu
     if (wave > 0 && bugs.length === 0 && bugsSpawnedThisWave >= bugsToSpawn()) {
         waveInProgress = false;
+        upgradeMenu.pos = screenCenter;
         upgradeMenu.visible = true;
     }
 }

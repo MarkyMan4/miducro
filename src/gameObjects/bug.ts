@@ -1,5 +1,6 @@
 import { drawTile, EngineObject, hsl, ParticleEmitter, randInt, randSign, tile, vec2, Vector2 } from "littlejsengine";
 import type Projectile from "./projectile";
+import soundEffects from "../sounds";
 
 const MOVE_SPEED = 0.1;
 
@@ -38,6 +39,7 @@ class Bug extends EngineObject {
 
     collideWithObject(object: EngineObject): boolean {
         if (object.constructor.name === 'Projectile') {
+            soundEffects.bugHit.play();
             let proj = object as Projectile;
             this.health -= proj.damage;
             proj.destroy();
@@ -57,6 +59,7 @@ class Bug extends EngineObject {
             );
 
             if (this.health <= 0) {
+                soundEffects.bugKilled.play();
                 this.destroy();
             }
         }

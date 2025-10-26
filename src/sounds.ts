@@ -1,10 +1,13 @@
 import { Sound } from "littlejsengine";
 
 const soundEffects = {
-    shoot: new Sound([,,90,,.01,.03,4,,,,,,,9,50,.2,,.2,.02]),
+    // shoot: new Sound([,,90,,.01,.03,4,,,,,,,9,50,.2,,.2,.02]),
+    shoot: new Sound([1.1,,256,,.03,.01,1,2.4,,,-109,.26,.08,.3,8.7,,,.91,,.02]),
     explosion: new Sound([,,90,,.01,.03,4,,,,,,,9,50,.2,,.2,2]),
-    bugHit: new Sound([]),
-    bugKilled: new Sound([]),
+    bugHit: new Sound([1.3,,830,.02,.02,.03,,.3,,,-25,,.02,,18,.2,.01,.92,.02,.02]),
+    bugKilled: new Sound([2,,326,.02,.07,.02,4,,,,,,,1.9,,.1,.14,.67,.05,,99]),
+    powerup: new Sound([.8,,560,.07,.16,.13,5,1.2045952224567127,,-36,,,,,,,.18,.79,.14,,-1500]),
+    upgrade: new Sound([,,404,.05,.23,.39,1,2,,130,,,,,12,,,.52,.24,,-799]),
 }
 
 export default soundEffects;
