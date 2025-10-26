@@ -94,7 +94,8 @@ function gameInit()
     player = new Player(
         LJS.cameraPos,
         vec2(2, 1.5),
-        new Weapon(25, 15, 0.5, 1, hsl(0.175, 0.64, 0.6))
+        // TODO move thse values to a settings file to make it easier to tweak initial values
+        new Weapon(25, 15, 0.5, 1, 0.5, hsl(0.175, 0.64, 0.6))
     );
 
 

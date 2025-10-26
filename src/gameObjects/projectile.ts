@@ -5,14 +5,22 @@ class Projectile extends EngineObject {
     public damage: number;
     public range: number;
 
-    constructor(pos: Vector2, radius: number, targetPos: Vector2, damage: number, range: number, color: Color) {
+    constructor(
+        pos: Vector2,
+        radius: number,
+        targetPos: Vector2,
+        damage: number,
+        range: number,
+        speed: number,
+        color: Color
+    ) {
         super(pos, vec2(radius));
 
         this.startPos = pos;
         this.damage = damage;
         this.range = range;
         this.color = color;
-        this.velocity = targetPos.subtract(pos).normalize(0.5);
+        this.velocity = targetPos.subtract(pos).normalize(speed);
         this.setCollision();
     }
 
