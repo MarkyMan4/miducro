@@ -7,6 +7,7 @@ import Bug from './gameObjects/bug';
 import Weapon from './gameObjects/weapon';
 import { type Upgrade, upgradeOptions } from './upgrades';
 import soundEffects from './sounds';
+import settings from './settings';
 
 const backgroundColor = hsl(1.27, 0.51, 0.17);
 
@@ -15,7 +16,6 @@ let bugs: Bug[] = [];
 
 let gameStarted = false;
 let wave = 0;
-let baseEnemiesToSpawn = 5; // multiply by wave number to get enemies per wave
 let bugsSpawnedThisWave = 0;
 let waveInProgress = false; // I know a wave is over if enemiesSpawnedThis wave === enemiesToSpawn() and the length of the bugs array is 0
 let timeSinceBugSpawn = 0;
@@ -29,7 +29,7 @@ let upgrade3: LJS.UIButton;
 
 // calculate the number of enemies that should be spawned this wave 
 function bugsToSpawn(): number {
-    return wave * baseEnemiesToSpawn;
+    return wave * settings.baseEnemiesToSpawn;
 }
 
 // spawn count bugs at random spots on the edge of the screen
@@ -51,7 +51,7 @@ function spawnBugs(count: number) {
         }
 
         bugs.push(
-            new Bug(vec2(x, y), vec2(0.75, 1))
+            new Bug(vec2(x, y), vec2(0.75, 1), settings.baseBugSpeed)
         );
     }
 }
@@ -97,7 +97,14 @@ function gameInit()
         LJS.cameraPos,
         vec2(2, 1.5),
         // TODO move thse values to a settings file to make it easier to tweak initial values
-        new Weapon(25, 15, 0.5, 1, 0.5, hsl(0.175, 0.64, 0.6))
+        new Weapon(
+            settings.baseDamage,
+            settings.baseRange,
+            settings.baseFireRate,
+            settings.baseProjectilesPerShot,
+            settings.baseProjectileSpeed,
+            settings.projectileColor,
+        )
     );
 
 

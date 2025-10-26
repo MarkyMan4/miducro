@@ -1,13 +1,12 @@
 import { drawTile, EngineObject, vec2, Vector2, tile, mousePos, timeDelta, Timer, hsl } from "littlejsengine";
 import type Weapon from "./weapon";
-
-const MOVE_SPEED = 0.25;
-const DAMAGE_COOLDOWN = 2; // seconds of recovery before the player can take damage again
+import settings from "../settings";
 
 class Player extends EngineObject {
     public moveDirection: Vector2;
     public weapon: Weapon;
     public health: number;
+    public speed: number;
     private recoverTimer: Timer;
 
     constructor(pos: Vector2, size: Vector2, weapon: Weapon) {
@@ -18,12 +17,13 @@ class Player extends EngineObject {
         this.tileInfo = tile(0, vec2(51, 43), 1);
         this.health = 3;
         this.recoverTimer = new Timer(0);
+        this.speed = settings.basePlayerSpeed;
         this.setCollision();
     }
 
     update() {
         // make move speed the same in all directions, otherwise player moves faster when going diagonal
-        this.moveDirection = this.moveDirection.clampLength(1).scale(MOVE_SPEED);
+        this.moveDirection = this.moveDirection.clampLength(1).scale(this.speed);
         this.pos = this.pos.add(this.moveDirection);
 
         this.angle = -Math.atan2(this.pos.y - mousePos.y, this.pos.x - mousePos.x) + Math.PI;
@@ -53,7 +53,7 @@ class Player extends EngineObject {
         if (object.constructor.name === 'Bug') {
             if (this.recoverTimer.elapsed()) {
                 this.health--;
-                this.recoverTimer.set(DAMAGE_COOLDOWN);
+                this.recoverTimer.set(settings.playerDamageCooldown);
             }
         }
     

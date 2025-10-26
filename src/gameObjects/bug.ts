@@ -2,16 +2,16 @@ import { drawTile, EngineObject, hsl, ParticleEmitter, randInt, randSign, tile, 
 import type Projectile from "./projectile";
 import soundEffects from "../sounds";
 
-const MOVE_SPEED = 0.1;
-
 class Bug extends EngineObject {
     // position the bug is moving to, this gets updated to player position as the game is played
     public targetPosition: Vector2;
     public health: number;
+    public speed: number;
 
-    constructor(pos: Vector2, size: Vector2) {
+    constructor(pos: Vector2, size: Vector2, speed: number) {
         super(pos, size);
         this.setCollision(true, true, false);
+        this.speed = speed;
         this.targetPosition = vec2(0, 0);
         this.health = 100;
     }
@@ -26,7 +26,7 @@ class Bug extends EngineObject {
         // calculate direction to move based on target pos
         let deltaX = (this.targetPosition.x + (randInt(randomness) * randSign())) - this.pos.x;
         let deltaY = (this.targetPosition.y + (randInt(randomness) * randSign())) - this.pos.y;
-        let moveVector = vec2(deltaX, deltaY).normalize(1).scale(MOVE_SPEED);
+        let moveVector = vec2(deltaX, deltaY).normalize(1).scale(this.speed);
         this.velocity = moveVector;
 
         // point in the direction of movement
