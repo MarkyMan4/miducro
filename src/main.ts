@@ -201,8 +201,9 @@ function gameRenderPost()
         return;
     }
 
-    // show the wave number
-    LJS.drawTextScreen(`Wave ${wave}`, vec2(100, 40), 50)
+    // show the wave number and player health
+    LJS.drawTextScreen(`Wave ${wave}`, vec2(20, 40), 50, undefined, undefined, undefined, 'left');
+    LJS.drawTextScreen(`Health ${player.health}`, vec2(20, 90), 50, undefined, undefined, undefined, 'left');
 
     // check if wave is over and display upgrade menu
     if (wave > 0 && bugs.length === 0 && bugsSpawnedThisWave >= bugsToSpawn()) {
