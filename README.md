@@ -7,6 +7,9 @@
     - powerups last until the end of the round
     - instant kill all
     - temporary invncibility
+    - health pack
+    - invincibility
+    - items (make items usable by pressing 'e')
 - choose an upgrade
     - menu that randomly displays the choices:
         - increase fire rate
@@ -31,8 +34,8 @@ Other ideas
 
 todo
 - [x] particle animation when hitting and killing bugs
-- [ ] menu screen to select upgrade between waves
-- [ ] sound effects/music
+- [x] menu screen to select upgrade between waves
+- [x] sound effects/music
 - [ ] make player collide with edge of screen
-- [ ] player health system
+- [x] player health system
 - [ ] game over screen

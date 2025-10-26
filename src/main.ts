@@ -85,18 +85,10 @@ function startNextWave() {
     upgrade3.onClick = () => onUpgradeSelect(player.weapon, options[2].upgradeFunc);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-function gameInit()
-{
-    // called once after the engine starts up
-    // setup the game
-    LJS.setCanvasFixedSize(vec2(1920, 1080));
-    LJS.setCanvasClearColor(backgroundColor);
-
+function initializePlayer() {
     player = new Player(
         LJS.cameraPos,
         vec2(2, 1.5),
-        // TODO move thse values to a settings file to make it easier to tweak initial values
         new Weapon(
             settings.baseDamage,
             settings.baseRange,
@@ -106,7 +98,28 @@ function gameInit()
             settings.projectileColor,
         )
     );
+}
 
+function restartGame() {
+    bugs.forEach(b => b.destroy());
+    bugs = [];
+    initializePlayer();
+    wave = 0;
+    bugsSpawnedThisWave = 0;
+    waveInProgress = false;
+    timeSinceBugSpawn = 0;
+    startNextWave();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+function gameInit()
+{
+    // called once after the engine starts up
+    // setup the game
+    LJS.setCanvasFixedSize(vec2(1920, 1080));
+    LJS.setCanvasClearColor(backgroundColor);
+
+    initializePlayer();
 
     // create the upgrade menu and hide it, will show again at the end of the round
     new LJS.UISystemPlugin();
@@ -146,6 +159,11 @@ function gameUpdate()
 
     if (player.health <= 0) {
         player.destroy();
+
+        if(LJS.keyWasPressed('Space')) {
+            restartGame();
+        }
+
         return;
     }
 
@@ -216,6 +234,7 @@ function gameRenderPost()
     if (player.health <= 0) {
         LJS.drawTextScreen('Game Over', screenCenter, 80);
         LJS.drawTextScreen(`You survived until wave ${wave}`, vec2(screenCenter.x, screenCenter.y + 100), 40);
+        LJS.drawTextScreen('Press space to restart', vec2(screenCenter.x, screenCenter.y + 150), 40);
     }
 
     // show the wave number and player health
