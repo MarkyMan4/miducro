@@ -1,6 +1,7 @@
 import { drawTile, EngineObject, vec2, Vector2, tile, mousePos, timeDelta, Timer, hsl } from "littlejsengine";
 import type Weapon from "./weapon";
 import settings from "../settings";
+import soundEffects from "../sounds";
 
 class Player extends EngineObject {
     public moveDirection: Vector2;
@@ -54,6 +55,7 @@ class Player extends EngineObject {
 
         if (object.constructor.name === 'Bug') {
             if (this.recoverTimer.elapsed()) {
+                soundEffects.playerHit.play();
                 this.health--;
                 this.recoverTimer.set(settings.playerDamageCooldown);
             }

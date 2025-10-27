@@ -227,26 +227,27 @@ function gameRenderPost()
     // called after objects are rendered
     // draw effects or hud that appear above all objects
     const screenCenter = LJS.mainCanvasSize.scale(0.5);
+    const font = new LJS.FontImage();
 
     if (!gameStarted) {
         LJS.drawRect(vec2(0, -3), vec2(30, 10), hsl(0, 0, 0));
 
-        LJS.drawTextScreen('Press space to start', screenCenter, 80);
-        LJS.drawTextScreen('WASD to move', vec2(screenCenter.x, screenCenter.y + 100), 40);
-        LJS.drawTextScreen('Point and click to shoot', vec2(screenCenter.x, screenCenter.y + 150), 40);
+        font.drawTextScreen('Press space to start', screenCenter, 5, true)
+        font.drawTextScreen('WASD to move', vec2(screenCenter.x, screenCenter.y + 100), 3, true);
+        font.drawTextScreen('Point and click to shoot', vec2(screenCenter.x, screenCenter.y + 150), 3, true);
 
         return;
     }
 
     if (player.health <= 0) {
-        LJS.drawTextScreen('Game Over', screenCenter, 80);
-        LJS.drawTextScreen(`You survived until wave ${wave}`, vec2(screenCenter.x, screenCenter.y + 100), 40);
-        LJS.drawTextScreen('Press space to restart', vec2(screenCenter.x, screenCenter.y + 150), 40);
+        font.drawTextScreen('Game Over', screenCenter, 6, true);
+        font.drawTextScreen(`You survived until wave ${wave}`, vec2(screenCenter.x, screenCenter.y + 100), 3, true);
+        font.drawTextScreen('Press space to restart', vec2(screenCenter.x, screenCenter.y + 150), 3, true);
     }
 
     // show the wave number and player health
-    LJS.drawTextScreen(`Wave ${wave}`, vec2(20, 40), 50, undefined, undefined, undefined, 'left');
-    LJS.drawTextScreen(`Health ${player.health}`, vec2(20, 90), 50, undefined, undefined, undefined, 'left');
+    font.drawTextScreen(`Wave ${wave}`, vec2(20, 40), 3);
+    font.drawTextScreen(`Health ${player.health}`, vec2(20, 90), 3);
 
     // check if wave is over and display upgrade menu
     if (wave > 0 && bugs.length === 0 && bugsSpawnedThisWave >= bugsToSpawn()) {

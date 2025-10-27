@@ -39,6 +39,14 @@ class Projectile extends EngineObject {
     render() {
         drawCircle(this.pos, this.size.x, this.color);
     }
+
+    collideWithObject(object: EngineObject): boolean {
+        if (object.constructor.name === 'Wall') {
+            return false;
+        }
+        
+        return true;
+    }
 }
 
 export default Projectile;
