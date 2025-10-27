@@ -22,9 +22,11 @@ class Player extends EngineObject {
     }
 
     update() {
+        super.update();
+
         // make move speed the same in all directions, otherwise player moves faster when going diagonal
         this.moveDirection = this.moveDirection.clampLength(1).scale(this.speed);
-        this.pos = this.pos.add(this.moveDirection);
+        this.velocity = this.moveDirection;
 
         this.angle = -Math.atan2(this.pos.y - mousePos.y, this.pos.x - mousePos.x) + Math.PI;
 

@@ -8,6 +8,7 @@ import Weapon from './gameObjects/weapon';
 import { type Upgrade, upgradeOptions } from './upgrades';
 import soundEffects from './sounds';
 import settings from './settings';
+import Wall from './gameObjects/wall';
 
 const backgroundColor = hsl(1.27, 0.51, 0.17);
 
@@ -41,13 +42,13 @@ function spawnBugs(count: number) {
 
         if (LJS.randInt(2) === 0) {
             // spawn on top or bottom of screen
-            x = LJS.randInt(LJS.mainCanvasSize.x / LJS.cameraScale / 2) * (LJS.randInt(2) === 0 ? -1 : 1);
-            y = LJS.mainCanvasSize.y / LJS.cameraScale / 2 * (LJS.randInt(2) === 0 ? -1 : 1);
+            x = LJS.randInt(LJS.canvasFixedSize.x / LJS.cameraScale / 2) * (LJS.randInt(2) === 0 ? -1 : 1);
+            y = LJS.canvasFixedSize.y / LJS.cameraScale / 2 * (LJS.randInt(2) === 0 ? -1 : 1);
         }
         else {
             // spawn on left or right of screen
-            x = LJS.mainCanvasSize.x / LJS.cameraScale / 2 * (LJS.randInt(2) === 0 ? -1 : 1);
-            y = LJS.randInt(LJS.mainCanvasSize.y / LJS.cameraScale / 2) * (LJS.randInt(2) === 0 ? -1 : 1);
+            x = LJS.canvasFixedSize.x / LJS.cameraScale / 2 * (LJS.randInt(2) === 0 ? -1 : 1);
+            y = LJS.randInt(LJS.canvasFixedSize.y / LJS.cameraScale / 2) * (LJS.randInt(2) === 0 ? -1 : 1);
         }
 
         bugs.push(
@@ -118,6 +119,12 @@ function gameInit()
     // setup the game
     LJS.setCanvasFixedSize(vec2(1920, 1080));
     LJS.setCanvasClearColor(backgroundColor);
+
+    // draw wall on all four sides just off the screen - in order: top, bottom, left, right
+    new Wall(vec2(0, (LJS.canvasFixedSize.y / LJS.cameraScale / 2) + 1), vec2(LJS.canvasFixedSize.x / LJS.cameraScale, 2));
+    new Wall(vec2(0, -(LJS.canvasFixedSize.y / LJS.cameraScale / 2) - 1), vec2(LJS.canvasFixedSize.x / LJS.cameraScale, 2));
+    new Wall(vec2(-(LJS.canvasFixedSize.x / LJS.cameraScale / 2) - 1, 0), vec2(2, LJS.canvasFixedSize.y / LJS.cameraScale));
+    new Wall(vec2((LJS.canvasFixedSize.x / LJS.cameraScale / 2) + 1, 0), vec2(2, LJS.canvasFixedSize.y / LJS.cameraScale));
 
     initializePlayer();
 

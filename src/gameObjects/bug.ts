@@ -10,7 +10,7 @@ class Bug extends EngineObject {
 
     constructor(pos: Vector2, size: Vector2, speed: number) {
         super(pos, size);
-        this.setCollision(true, true, false);
+        this.setCollision();
         this.speed = speed;
         this.targetPosition = vec2(0, 0);
         this.health = 100;
@@ -38,6 +38,11 @@ class Bug extends EngineObject {
     }
 
     collideWithObject(object: EngineObject): boolean {
+        // don't collide with walls since bugs spawn offscreen
+        if (object.constructor.name === 'Wall') {
+            return false;
+        }
+
         if (object.constructor.name === 'Projectile') {
             soundEffects.bugHit.play();
             let proj = object as Projectile;
