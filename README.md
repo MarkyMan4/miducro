@@ -36,6 +36,11 @@ todo
 - [x] particle animation when hitting and killing bugs
 - [x] menu screen to select upgrade between waves
 - [x] sound effects/music
-- [ ] make player collide with edge of screen
+- [x] make player collide with edge of screen
 - [x] player health system
-- [ ] game over screen
+- [x] game over screen
+- [ ] add power ups
+- [ ] once I build, collisions aren't working
+- [ ] add item slot for player
+- [ ] make bugs randomly drop items
+- [ ] add different enemy types
