@@ -1,6 +1,7 @@
-import { drawTile, EngineObject, hsl, ParticleEmitter, randInt, randSign, tile, vec2, Vector2 } from "littlejsengine";
+import { drawTile, EngineObject, hsl, ParticleEmitter, rand, randInt, randSign, tile, vec2, Vector2 } from "littlejsengine";
 import type Projectile from "./projectile";
 import soundEffects from "../sounds";
+import Powerup from "./powerup";
 
 class Bug extends EngineObject {
     // position the bug is moving to, this gets updated to player position as the game is played
@@ -65,6 +66,11 @@ class Bug extends EngineObject {
 
             if (this.health <= 0) {
                 soundEffects.bugKilled.play();
+
+                // randomly drop powerups
+                if(rand(0, 1) < 0.15) {
+                    new Powerup(this.pos, vec2(1));
+                }
                 this.destroy();
             }
         }
