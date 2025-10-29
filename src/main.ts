@@ -265,5 +265,9 @@ LJS.engineInit(
     gameUpdatePost,
     gameRender,
     gameRenderPost,
-    ['Ants.png', 'survivor1_machine.png', 'recycle_items.png'],
+    [
+        'Ants.png',
+        'survivor1_machine.png',
+        'items/bomb.png',
+    ],
 );

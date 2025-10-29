@@ -44,3 +44,4 @@ todo
 - [ ] add item slot for player
 - [ ] make bugs randomly drop items
 - [ ] add different enemy types
+- [ ] GH action for deploying to pages

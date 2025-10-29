@@ -9,7 +9,7 @@ class Powerup extends EngineObject {
     }
 
     render() {
-        drawTile(this.pos, vec2(0.5, 2), tile(0, vec2(16, 96), 2));
+        drawTile(this.pos, vec2(2), tile(0, vec2(16, 16), 2));
     }
 
     collideWithObject(object: EngineObject): boolean {
