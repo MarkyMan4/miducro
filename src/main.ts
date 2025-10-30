@@ -28,6 +28,11 @@ let upgradeMenu: LJS.UIObject;
 let upgrade1: LJS.UIButton;
 let upgrade2: LJS.UIButton;
 let upgrade3: LJS.UIButton;
+let eventText = '';
+let eventTextDisplayedTime = 0;
+
+// fonts
+const font = new LJS.FontImage();
 
 // calculate the number of enemies that should be spawned this wave 
 function bugsToSpawn(): number {
@@ -115,6 +120,8 @@ function restartGame() {
 }
 
 gameBus.addEventListener('bomb', () => {
+    eventText = 'Bug Bomb';
+    eventTextDisplayedTime = 0;
     bugs.forEach(bug => bug.kill());
 });
 
@@ -180,6 +187,10 @@ function gameUpdate()
         return;
     }
 
+    if (eventText !== '') {
+        eventTextDisplayedTime += LJS.timeDelta;
+    }
+
     if (gameStarted && waveInProgress) {
         // spawn bugs
         timeSinceBugSpawn += LJS.timeDelta;
@@ -233,7 +244,6 @@ function gameRenderPost()
     // called after objects are rendered
     // draw effects or hud that appear above all objects
     const screenCenter = LJS.mainCanvasSize.scale(0.5);
-    const font = new LJS.FontImage();
 
     if (!gameStarted) {
         LJS.drawRect(vec2(0, -3), vec2(30, 10), hsl(0, 0, 0));
@@ -250,6 +260,17 @@ function gameRenderPost()
         font.drawTextScreen(`You survived until wave ${wave}`, vec2(screenCenter.x, screenCenter.y + 100), 3, true);
         font.drawTextScreen('Press space to restart', vec2(screenCenter.x, screenCenter.y + 150), 3, true);
     }
+
+    if (eventText !== '') {
+        if (eventTextDisplayedTime <= 2) {
+            font.drawTextScreen(eventText, vec2(screenCenter.x, screenCenter.y / 2), 5, true);
+        }
+        else {
+            eventTextDisplayedTime = 0;
+            eventText = '';
+        }
+    }
+
 
     // show the wave number and player health
     font.drawTextScreen(`Wave ${wave}`, vec2(20, 40), 3);

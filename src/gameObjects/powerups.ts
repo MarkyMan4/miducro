@@ -1,10 +1,24 @@
-import { drawTile, EngineObject, tile, vec2, Vector2 } from "littlejsengine";
+import { drawTile, EngineObject, tile, timeDelta, vec2, Vector2 } from "littlejsengine";
 
-// TODO add a timer so it self destructs after a few seconds
+const POWERUP_TIME = 3; // time in seconds before powerup disappears
+
 export class Powerup extends EngineObject {
+    private timeSinceDrop: number;
+
     constructor(pos: Vector2, size: Vector2) {
         super(pos, size);
         this.setCollision(true, false, false, false);
+        this.timeSinceDrop = 0;
+    }
+
+    update() {
+        super.update();
+        
+        this.timeSinceDrop += timeDelta;
+
+        if (this.timeSinceDrop >= POWERUP_TIME) {
+            this.destroy();
+        }
     }
 }
 
