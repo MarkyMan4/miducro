@@ -2,6 +2,9 @@ import { drawTile, EngineObject, vec2, Vector2, tile, mousePos, timeDelta, Timer
 import type Weapon from "./weapon";
 import settings from "../settings";
 import soundEffects from "../sounds";
+import Projectile from "./projectile";
+import Bug from "./bug";
+import { BombPowerup } from "./powerups";
 
 class Player extends EngineObject {
     public moveDirection: Vector2;
@@ -9,11 +12,13 @@ class Player extends EngineObject {
     public health: number;
     public speed: number;
     private recoverTimer: Timer;
+    private eventBus: EventTarget;
 
-    constructor(pos: Vector2, size: Vector2, weapon: Weapon) {
+    constructor(pos: Vector2, size: Vector2, weapon: Weapon, eventBus: EventTarget) {
         super(pos, size);
 
         this.weapon = weapon;
+        this.eventBus = eventBus;
         this.moveDirection = vec2(0);
         this.tileInfo = tile(0, vec2(51, 43), 1);
         this.health = 3;
@@ -49,16 +54,23 @@ class Player extends EngineObject {
     }
 
     collideWithObject(object: EngineObject): boolean {
-        if (object.constructor.name === 'Projectile') {
+        if (object instanceof Projectile) {
             return false;
         }
 
-        if (object.constructor.name === 'Bug') {
+        if (object instanceof Bug) {
             if (this.recoverTimer.elapsed()) {
                 soundEffects.playerHit.play();
                 this.health--;
                 this.recoverTimer.set(settings.playerDamageCooldown);
             }
+        }
+
+        if (object instanceof BombPowerup) {
+            const bombEvent = new CustomEvent('bomb');
+            this.eventBus.dispatchEvent(bombEvent);
+            soundEffects.bombPickup.play();
+            object.destroy();
         }
     
         return true;

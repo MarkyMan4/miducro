@@ -1,7 +1,7 @@
 import { drawTile, EngineObject, hsl, ParticleEmitter, rand, randInt, randSign, tile, vec2, Vector2 } from "littlejsengine";
 import Projectile from "./projectile";
 import soundEffects from "../sounds";
-import Powerup from "./powerup";
+import { Powerup, BombPowerup } from "./powerups";
 import Wall from "./wall";
 
 class Bug extends EngineObject {
@@ -39,9 +39,27 @@ class Bug extends EngineObject {
         drawTile(this.pos, vec2(2, 2.5), tile(0, vec2(60, 80), 0, 15), undefined, this.angle);
     }
 
+    kill() {
+        new ParticleEmitter(
+            this.pos,
+            undefined,
+            1, 0.1, 100, Math.PI,
+            undefined,
+            hsl(0, 1, 0.6), 
+            hsl(0, 1, 0.6), 
+            hsl(0, 1, 0.6), 
+            hsl(0, 1, 0.6), 
+            undefined,
+            0.25,
+            0,
+        );
+
+        this.destroy();
+    }
+
     collideWithObject(object: EngineObject): boolean {
         // don't collide with walls since bugs spawn offscreen
-        if (object instanceof Wall) {
+        if (object instanceof Wall || object instanceof Powerup) {
             return false;
         }
 
@@ -70,9 +88,10 @@ class Bug extends EngineObject {
 
                 // randomly drop powerups
                 if(rand(0, 1) < 0.5) {
-                    new Powerup(this.pos, vec2(1));
+                    new BombPowerup(this.pos, vec2(1));
                 }
-                this.destroy();
+            
+                this.kill();
             }
         }
 

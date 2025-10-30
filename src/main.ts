@@ -14,6 +14,7 @@ const backgroundColor = hsl(1.27, 0.51, 0.17);
 
 let player: Player;
 let bugs: Bug[] = [];
+let gameBus = new EventTarget();
 
 let gameStarted = false;
 let wave = 0;
@@ -97,7 +98,8 @@ function initializePlayer() {
             settings.baseProjectilesPerShot,
             settings.baseProjectileSpeed,
             settings.projectileColor,
-        )
+        ),
+        gameBus
     );
 }
 
@@ -111,6 +113,10 @@ function restartGame() {
     timeSinceBugSpawn = 0;
     startNextWave();
 }
+
+gameBus.addEventListener('bomb', () => {
+    bugs.forEach(bug => bug.kill());
+});
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit()
