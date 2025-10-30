@@ -1,7 +1,7 @@
 import { drawTile, EngineObject, hsl, ParticleEmitter, rand, randInt, randSign, tile, vec2, Vector2 } from "littlejsengine";
 import Projectile from "./projectile";
 import soundEffects from "../sounds";
-import { Powerup, BombPowerup } from "./powerups";
+import { Powerup, BombPowerup, ShovelPowerup } from "./powerups";
 import Wall from "./wall";
 
 class Bug extends EngineObject {
@@ -9,6 +9,7 @@ class Bug extends EngineObject {
     public targetPosition: Vector2;
     public health: number;
     public speed: number;
+    private powerupOptions = [BombPowerup, ShovelPowerup];
 
     constructor(pos: Vector2, size: Vector2, speed: number) {
         super(pos, size);
@@ -39,7 +40,7 @@ class Bug extends EngineObject {
         drawTile(this.pos, vec2(2, 2.5), tile(0, vec2(60, 80), 0, 15), undefined, this.angle);
     }
 
-    kill() {
+    hitEffect() {
         new ParticleEmitter(
             this.pos,
             undefined,
@@ -53,7 +54,29 @@ class Bug extends EngineObject {
             0.25,
             0,
         );
+    }
 
+    hit(damage: number) {
+        soundEffects.bugHit.play();
+        this.health -= damage;
+
+        this.hitEffect();
+
+        if (this.health <= 0) {
+            soundEffects.bugKilled.play();
+
+            // randomly drop powerups
+            if(rand(0, 1) < 0.9) {
+                const powerup = this.powerupOptions[randInt(this.powerupOptions.length)];
+                new powerup(this.pos, vec2(1));
+            }
+        
+            this.kill();
+        }
+    }
+
+    kill() {
+        this.hitEffect();
         this.destroy();
     }
 
@@ -64,35 +87,8 @@ class Bug extends EngineObject {
         }
 
         if (object instanceof Projectile) {
-            soundEffects.bugHit.play();
-            let proj = object as Projectile;
-            this.health -= proj.damage;
-            proj.destroy();
-
-            new ParticleEmitter(
-                this.pos,
-                undefined,
-                1, 0.1, 100, Math.PI,
-                undefined,
-                hsl(0, 1, 0.6), 
-                hsl(0, 1, 0.6), 
-                hsl(0, 1, 0.6), 
-                hsl(0, 1, 0.6), 
-                undefined,
-                0.25,
-                0,
-            );
-
-            if (this.health <= 0) {
-                soundEffects.bugKilled.play();
-
-                // randomly drop powerups
-                if(rand(0, 1) < 0.5) {
-                    new BombPowerup(this.pos, vec2(1));
-                }
-            
-                this.kill();
-            }
+            this.hit(object.damage);
+            object.destroy();
         }
 
         return true;

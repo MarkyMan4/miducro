@@ -125,6 +125,13 @@ gameBus.addEventListener('bomb', () => {
     bugs.forEach(bug => bug.kill());
 });
 
+
+gameBus.addEventListener('shovel', () => {
+    eventText = 'Dig Their Graves';
+    eventTextDisplayedTime = 0;
+    bugs.forEach(bug => bug.hit(bug.health / 2));
+});
+
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit()
 {
@@ -263,7 +270,7 @@ function gameRenderPost()
 
     if (eventText !== '') {
         if (eventTextDisplayedTime <= 2) {
-            font.drawTextScreen(eventText, vec2(screenCenter.x, screenCenter.y / 2), 5, true);
+            font.drawTextScreen(eventText, vec2(screenCenter.x, screenCenter.y / 3), 5, true);
         }
         else {
             eventTextDisplayedTime = 0;
@@ -296,5 +303,6 @@ LJS.engineInit(
         'Ants.png',
         'survivor1_machine.png',
         'items/bomb.png',
+        'items/shovel.png',
     ],
 );
