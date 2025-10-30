@@ -66,7 +66,7 @@ class Bug extends EngineObject {
             soundEffects.bugKilled.play();
 
             // randomly drop powerups
-            if(rand(0, 1) < 0.9) {
+            if(rand(0, 1) < 0.1) {
                 const powerup = this.powerupOptions[randInt(this.powerupOptions.length)];
                 new powerup(this.pos, vec2(1));
             }
