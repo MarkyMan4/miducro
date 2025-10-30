@@ -40,7 +40,7 @@ todo
 - [x] player health system
 - [x] game over screen
 - [ ] add power ups
-- [ ] once I build, collisions aren't working
+- [x] bug - once I build, collisions aren't working
 - [ ] add item slot for player
 - [ ] make bugs randomly drop items
 - [ ] add different enemy types

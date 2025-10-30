@@ -1,7 +1,8 @@
 import { drawTile, EngineObject, hsl, ParticleEmitter, rand, randInt, randSign, tile, vec2, Vector2 } from "littlejsengine";
-import type Projectile from "./projectile";
+import Projectile from "./projectile";
 import soundEffects from "../sounds";
 import Powerup from "./powerup";
+import Wall from "./wall";
 
 class Bug extends EngineObject {
     // position the bug is moving to, this gets updated to player position as the game is played
@@ -40,11 +41,11 @@ class Bug extends EngineObject {
 
     collideWithObject(object: EngineObject): boolean {
         // don't collide with walls since bugs spawn offscreen
-        if (object.constructor.name === 'Wall') {
+        if (object instanceof Wall) {
             return false;
         }
 
-        if (object.constructor.name === 'Projectile') {
+        if (object instanceof Projectile) {
             soundEffects.bugHit.play();
             let proj = object as Projectile;
             this.health -= proj.damage;
