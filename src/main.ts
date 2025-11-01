@@ -150,7 +150,7 @@ function gameInit()
     LJS.uiSystem.defaultCornerRadius = 5;
 
     upgradeMenu = new LJS.UIObject(LJS.mainCanvasSize.scale(0.5), vec2(600, 450));
-    upgradeMenu.addChild(new LJS.UIText(vec2(0, -120), vec2(600, 100), 'Choose an upgrade', undefined, 'GameFont'));
+    upgradeMenu.addChild(new LJS.UIText(vec2(0, -120), vec2(500, 75), 'Choose an upgrade', undefined, 'GameFont'));
 
     upgrade1 = new LJS.UIButton(vec2(0, -10), vec2(300, 50));
     upgrade1.textHeight = 40;
@@ -184,6 +184,10 @@ function gameUpdate()
         return;
     }
 
+    if (eventText !== '') {
+        eventTextDisplayedTime += LJS.timeDelta;
+    }
+
     if (player.health <= 0) {
         player.destroy();
 
@@ -192,10 +196,6 @@ function gameUpdate()
         }
 
         return;
-    }
-
-    if (eventText !== '') {
-        eventTextDisplayedTime += LJS.timeDelta;
     }
 
     if (gameStarted && waveInProgress) {
