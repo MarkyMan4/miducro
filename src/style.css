@@ -1,3 +1,8 @@
 body {
     cursor: crosshair;
 }
+
+@font-face {
+  font-family: 'GameFont';
+  src: url('/fonts/Jersey10-Regular.ttf') format('truetype');
+}

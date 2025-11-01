@@ -31,9 +31,6 @@ let upgrade3: LJS.UIButton;
 let eventText = '';
 let eventTextDisplayedTime = 0;
 
-// fonts
-const font = new LJS.FontImage();
-
 // calculate the number of enemies that should be spawned this wave 
 function bugsToSpawn(): number {
     return wave * settings.baseEnemiesToSpawn;
@@ -153,18 +150,21 @@ function gameInit()
     LJS.uiSystem.defaultCornerRadius = 5;
 
     upgradeMenu = new LJS.UIObject(LJS.mainCanvasSize.scale(0.5), vec2(600, 450));
-    upgradeMenu.addChild(new LJS.UIText(vec2(0, -120), vec2(400, 50), 'Choose an upgrade'));
+    upgradeMenu.addChild(new LJS.UIText(vec2(0, -120), vec2(600, 100), 'Choose an upgrade', undefined, 'GameFont'));
 
     upgrade1 = new LJS.UIButton(vec2(0, -10), vec2(300, 50));
-    upgrade1.textHeight = 30;
+    upgrade1.textHeight = 40;
+    upgrade1.font = 'GameFont';
     upgradeMenu.addChild(upgrade1);
 
     upgrade2 = new LJS.UIButton(vec2(0, 50), vec2(300, 50));
-    upgrade2.textHeight = 30;
+    upgrade2.textHeight = 40;
+    upgrade2.font = 'GameFont';
     upgradeMenu.addChild(upgrade2);
 
     upgrade3 = new LJS.UIButton(vec2(0, 110), vec2(300, 50));
-    upgrade3.textHeight = 30;
+    upgrade3.textHeight = 40;
+    upgrade3.font = 'GameFont';
     upgradeMenu.addChild(upgrade3);
 
     upgradeMenu.visible = false;
@@ -245,6 +245,10 @@ function gameRender()
     // LJS.drawTile(vec2(LJS.cameraPos.x + 2, LJS.cameraPos.y), vec2(3), tile(3, 90))
 }
 
+function displayText(text: string, pos: LJS.Vector2, size: number, textAlign: CanvasTextAlign = 'center') {
+    LJS.drawTextScreen(text, pos, size, undefined, undefined, undefined, textAlign, 'GameFont');
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 function gameRenderPost()
 {
@@ -255,22 +259,22 @@ function gameRenderPost()
     if (!gameStarted) {
         LJS.drawRect(vec2(0, -3), vec2(30, 10), hsl(0, 0, 0));
 
-        font.drawTextScreen('Press space to start', screenCenter, 5, true)
-        font.drawTextScreen('WASD to move', vec2(screenCenter.x, screenCenter.y + 100), 3, true);
-        font.drawTextScreen('Point and click to shoot', vec2(screenCenter.x, screenCenter.y + 150), 3, true);
+        displayText('Press space to start', screenCenter, 70);
+        displayText('WASD to move', vec2(screenCenter.x, screenCenter.y + 100), 50);
+        displayText('Point and click to shoot', vec2(screenCenter.x, screenCenter.y + 160), 50);
 
         return;
     }
 
     if (player.health <= 0) {
-        font.drawTextScreen('Game Over', screenCenter, 6, true);
-        font.drawTextScreen(`You survived until wave ${wave}`, vec2(screenCenter.x, screenCenter.y + 100), 3, true);
-        font.drawTextScreen('Press space to restart', vec2(screenCenter.x, screenCenter.y + 150), 3, true);
+        displayText('Game Over', screenCenter, 70);
+        displayText(`You survived until wave ${wave}`, vec2(screenCenter.x, screenCenter.y + 100), 50);
+        displayText('Press space to restart', vec2(screenCenter.x, screenCenter.y + 150), 50);
     }
 
     if (eventText !== '') {
         if (eventTextDisplayedTime <= 2) {
-            font.drawTextScreen(eventText, vec2(screenCenter.x, screenCenter.y / 3), 5, true);
+            displayText(eventText, vec2(screenCenter.x, screenCenter.y / 3), 60);
         }
         else {
             eventTextDisplayedTime = 0;
@@ -280,8 +284,8 @@ function gameRenderPost()
 
 
     // show the wave number and player health
-    font.drawTextScreen(`Wave ${wave}`, vec2(20, 40), 3);
-    font.drawTextScreen(`Health ${player.health}`, vec2(20, 90), 3);
+    displayText(`Wave ${wave}`, vec2(20, 40), 50, 'left');
+    displayText(`Health ${player.health}`, vec2(20, 90), 50, 'left');
 
     // check if wave is over and display upgrade menu
     if (wave > 0 && bugs.length === 0 && bugsSpawnedThisWave >= bugsToSpawn()) {
