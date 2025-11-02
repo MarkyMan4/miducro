@@ -41,4 +41,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          artifact-name: miducro-build
+          artifact_name: miducro-build
