@@ -10,6 +10,7 @@
     - health pack
     - invincibility
     - items (make items usable by pressing 'e')
+    - kill bug on collision
 - choose an upgrade
     - menu that randomly displays the choices:
         - increase fire rate
@@ -39,9 +40,9 @@ todo
 - [x] make player collide with edge of screen
 - [x] player health system
 - [x] game over screen
-- [ ] add power ups
+- [x] add items
 - [x] bug - once I build, collisions aren't working
 - [ ] add item slot for player
-- [ ] make bugs randomly drop items
+- [x] make bugs randomly drop items
 - [ ] add different enemy types
 - [ ] GH action for deploying to pages
