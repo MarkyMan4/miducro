@@ -9,6 +9,7 @@ class Bug extends EngineObject {
     // position the bug is moving to, this gets updated to player position as the game is played
     public targetPosition: Vector2;
     public health: number;
+    public tileIndex: number;
     public speed: number;
     private eventBus: EventTarget;
     private itemDropOnKillChance: number;
@@ -20,17 +21,20 @@ class Bug extends EngineObject {
         size: Vector2,
         speed: number,
         eventBus: EventTarget,
-        itemDropOnKillChance: number = 0.1,
-        itemDropOnHitChance: number = 0,
+        health: number = settings.baseBugHealth,
+        tileIndex: number = 0,
+        itemDropOnKillChance: number = settings.baseBugKillItemChance,
+        itemDropOnHitChance: number = settings.baseBugHitItemChance,
     ) {
         super(pos, size);
         this.setCollision();
         this.speed = speed;
         this.eventBus = eventBus;
+        this.health = health;
+        this.tileIndex = tileIndex;
         this.itemDropOnKillChance = itemDropOnKillChance;
         this.itemDropOnHitChance = itemDropOnHitChance;
         this.targetPosition = vec2(0, 0);
-        this.health = settings.baseBugHealth;
     }
 
     update() {
@@ -51,7 +55,13 @@ class Bug extends EngineObject {
     }
 
     render() {
-        drawTile(this.pos, vec2(2, 2.5), tile(0, vec2(60, 80), 0, 15), undefined, this.angle);
+        drawTile(
+            this.pos,
+            vec2(this.size.x * 2.6, this.size.y * 2.5),
+            tile(this.tileIndex, vec2(60, 80), 0, 15),
+            undefined,
+            this.angle
+        );
     }
 
     hitEffect() {

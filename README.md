@@ -44,5 +44,7 @@ todo
 - [x] bug - once I build, collisions aren't working
 - [ ] add item slot for player
 - [x] make bugs randomly drop items
-- [ ] add different enemy types
-- [ ] GH action for deploying to pages
+- [x] add mega bugs
+- [ ] add fast moving bugs
+- [x] GH action for deploying to pages
+- [ ] replace initial screen with a menu, include a way to see what different items do

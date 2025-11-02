@@ -39,7 +39,6 @@ function bugsToSpawn(): number {
 
 // spawn count bugs at random spots on the edge of the screen
 function spawnBugs(count: number) {
-    // TODO make it so I can spawn "mega bugs" - bigger bugs with more health
     for (let i = 0; i < count; i++) {
         let x;
         let y;
@@ -55,8 +54,36 @@ function spawnBugs(count: number) {
             y = LJS.randInt(LJS.canvasFixedSize.y / LJS.cameraScale / 2) * (LJS.randInt(2) === 0 ? -1 : 1);
         }
 
+        let isMegaBug = false;
+        let size = vec2(0.75, 1);
+        let health = settings.baseBugHealth;
+        let killItemChance = settings.baseBugKillItemChance;
+        let hitItemChance = settings.baseBugHitItemChance;
+        let tileIndex = settings.baseBugTileIndex;
+
+        if (wave > 5) {
+            // TODO parameterize chance to spawn megabug so it gets greater as wave increases
+            isMegaBug = LJS.rand(0, 1) < 0.1;
+
+            if (isMegaBug) {
+                size = vec2(3, 4);
+                health = settings.baseBugHealth * wave;
+                hitItemChance = 0.05;
+                tileIndex = settings.megaBugTileIndex;
+            }
+        }
+
         bugs.push(
-            new Bug(vec2(x, y), vec2(0.75, 1), settings.baseBugSpeed, gameBus)
+            new Bug(
+                vec2(x, y),
+                size,
+                settings.baseBugSpeed,
+                gameBus,
+                health,
+                tileIndex,
+                killItemChance,
+                hitItemChance,
+            )
         );
     }
 }
