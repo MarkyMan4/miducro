@@ -1,6 +1,6 @@
 import { Color, drawCircle, EngineObject, vec2, Vector2 } from "littlejsengine";
 import Wall from "./wall";
-import { Powerup } from "./powerups";
+import { Item } from "./items";
 
 class Projectile extends EngineObject {
     private startPos: Vector2;
@@ -43,7 +43,7 @@ class Projectile extends EngineObject {
     }
 
     collideWithObject(object: EngineObject): boolean {
-        if (object instanceof Wall || object instanceof Powerup) {
+        if (object instanceof Wall || object instanceof Item || object instanceof Projectile) {
             return false;
         }
         

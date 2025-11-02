@@ -2,6 +2,7 @@ import { hsl } from "littlejsengine"
 
 const settings = {
     baseEnemiesToSpawn: 5,
+    baseBugHealth: 100,
     baseDamage: 25,
     baseRange: 15,
     baseFireRate: 0.5,

@@ -1,22 +1,36 @@
 import { drawTile, EngineObject, hsl, ParticleEmitter, rand, randInt, randSign, tile, vec2, Vector2 } from "littlejsengine";
 import Projectile from "./projectile";
 import soundEffects from "../sounds";
-import { Powerup, BombPowerup, ShovelPowerup } from "./powerups";
+import { Item, Bomb, PitchFork, Scythe } from "./items";
 import Wall from "./wall";
+import settings from "../settings";
 
 class Bug extends EngineObject {
     // position the bug is moving to, this gets updated to player position as the game is played
     public targetPosition: Vector2;
     public health: number;
     public speed: number;
-    private powerupOptions = [BombPowerup, ShovelPowerup];
+    private eventBus: EventTarget;
+    private itemDropOnKillChance: number;
+    private itemDropOnHitChance: number;
+    private powerupOptions = [Bomb, PitchFork, Scythe];
 
-    constructor(pos: Vector2, size: Vector2, speed: number) {
+    constructor(
+        pos: Vector2,
+        size: Vector2,
+        speed: number,
+        eventBus: EventTarget,
+        itemDropOnKillChance: number = 0.1,
+        itemDropOnHitChance: number = 0,
+    ) {
         super(pos, size);
         this.setCollision();
         this.speed = speed;
+        this.eventBus = eventBus;
+        this.itemDropOnKillChance = itemDropOnKillChance;
+        this.itemDropOnHitChance = itemDropOnHitChance;
         this.targetPosition = vec2(0, 0);
-        this.health = 100;
+        this.health = settings.baseBugHealth;
     }
 
     update() {
@@ -59,30 +73,34 @@ class Bug extends EngineObject {
     hit(damage: number) {
         soundEffects.bugHit.play();
         this.health -= damage;
-
         this.hitEffect();
 
-        if (this.health <= 0) {
-            soundEffects.bugKilled.play();
+        if(rand(0, 1) < this.itemDropOnHitChance) {
+            const powerup = this.powerupOptions[randInt(this.powerupOptions.length)];
+            new powerup(this.pos, vec2(1));
+        }
 
-            // randomly drop powerups
-            if(rand(0, 1) < 0.1) {
-                const powerup = this.powerupOptions[randInt(this.powerupOptions.length)];
-                new powerup(this.pos, vec2(1));
-            }
-        
+        if (this.health <= 0) {
+            soundEffects.bugKilled.play(); 
             this.kill();
         }
     }
 
     kill() {
+        if(rand(0, 1) < this.itemDropOnKillChance) {
+            const powerup = this.powerupOptions[randInt(this.powerupOptions.length)];
+            new powerup(this.pos, vec2(1));
+        }
+
         this.hitEffect();
         this.destroy();
+        const killEvent = new CustomEvent('bugkill');
+        this.eventBus.dispatchEvent(killEvent);
     }
 
     collideWithObject(object: EngineObject): boolean {
         // don't collide with walls since bugs spawn offscreen
-        if (object instanceof Wall || object instanceof Powerup) {
+        if (object instanceof Wall || object instanceof Item) {
             return false;
         }
 

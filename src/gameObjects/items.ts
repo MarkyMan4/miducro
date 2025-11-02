@@ -2,7 +2,7 @@ import { drawTile, EngineObject, tile, timeDelta, vec2, Vector2 } from "littlejs
 
 const POWERUP_TIME = 3; // time in seconds before powerup disappears
 
-export class Powerup extends EngineObject {
+export class Item extends EngineObject {
     private timeSinceDrop: number;
 
     constructor(pos: Vector2, size: Vector2) {
@@ -22,14 +22,20 @@ export class Powerup extends EngineObject {
     }
 }
 
-export class BombPowerup extends Powerup {
+export class Bomb extends Item {
     render() {
         drawTile(this.pos, vec2(2), tile(0, vec2(16, 16), 2));
     }
 }
 
-export class ShovelPowerup extends Powerup {
+export class PitchFork extends Item {
     render() {
         drawTile(this.pos, vec2(2), tile(0, vec2(16, 16), 3));
+    }
+}
+
+export class Scythe extends Item {
+    render() {
+        drawTile(this.pos, vec2(2), tile(0, vec2(16, 16), 4));
     }
 }

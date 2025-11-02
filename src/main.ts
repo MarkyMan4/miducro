@@ -22,6 +22,7 @@ let bugsSpawnedThisWave = 0;
 let waveInProgress = false; // I know a wave is over if enemiesSpawnedThis wave === enemiesToSpawn() and the length of the bugs array is 0
 let timeSinceBugSpawn = 0;
 let spawnRate = 0.25;
+let totalBugsKilled = 0;
 
 // UI
 let upgradeMenu: LJS.UIObject;
@@ -55,7 +56,7 @@ function spawnBugs(count: number) {
         }
 
         bugs.push(
-            new Bug(vec2(x, y), vec2(0.75, 1), settings.baseBugSpeed)
+            new Bug(vec2(x, y), vec2(0.75, 1), settings.baseBugSpeed, gameBus)
         );
     }
 }
@@ -113,20 +114,31 @@ function restartGame() {
     bugsSpawnedThisWave = 0;
     waveInProgress = false;
     timeSinceBugSpawn = 0;
+    totalBugsKilled = 0;
     startNextWave();
 }
+
+gameBus.addEventListener('bugkill', () => {
+    totalBugsKilled++;
+});
 
 gameBus.addEventListener('bomb', () => {
     eventText = 'Bug Bomb';
     eventTextDisplayedTime = 0;
+    soundEffects.bombPickup.play();
     bugs.forEach(bug => bug.kill());
 });
 
-
-gameBus.addEventListener('shovel', () => {
-    eventText = 'Dig Their Graves';
+gameBus.addEventListener('pitchfork', () => {
+    eventText = 'Mass Damage';
     eventTextDisplayedTime = 0;
-    bugs.forEach(bug => bug.hit(bug.health / 2));
+    bugs.forEach(bug => bug.hit(settings.baseBugHealth / 2));
+});
+
+gameBus.addEventListener('scythe', () => {
+    eventText = 'Reap What You Sow';
+    eventTextDisplayedTime = 0;
+    bugs.forEach(bug => bug.hit(totalBugsKilled));
 });
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -286,6 +298,7 @@ function gameRenderPost()
     // show the wave number and player health
     displayText(`Wave ${wave}`, vec2(20, 40), 50, 'left');
     displayText(`Health ${player.health}`, vec2(20, 90), 50, 'left');
+    displayText(`Bugs Killed ${totalBugsKilled}`, vec2(20, 140), 50, 'left');
 
     // check if wave is over and display upgrade menu
     if (wave > 0 && bugs.length === 0 && bugsSpawnedThisWave >= bugsToSpawn()) {
@@ -307,6 +320,7 @@ LJS.engineInit(
         'Ants.png',
         'survivor1_machine.png',
         'items/bomb.png',
-        'items/shovel.png',
+        'items/pitchfork.png',
+        'items/scythe.png'
     ],
 );
