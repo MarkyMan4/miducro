@@ -323,9 +323,9 @@ function gameRenderPost()
 
 
     // show the wave number and player health
-    displayText(`Wave ${wave}`, vec2(20, 40), 50, 'left');
-    displayText(`Health ${player.health}`, vec2(20, 90), 50, 'left');
-    displayText(`Bugs Killed ${totalBugsKilled}`, vec2(20, 140), 50, 'left');
+    displayText(`Wave: ${wave}`, vec2(20, 40), 50, 'left');
+    displayText(`Health: ${player.health}`, vec2(20, 90), 50, 'left');
+    displayText(`Bugs Killed: ${totalBugsKilled}`, vec2(20, 140), 50, 'left');
 
     // check if wave is over and display upgrade menu
     if (wave > 0 && bugs.length === 0 && bugsSpawnedThisWave >= bugsToSpawn()) {
