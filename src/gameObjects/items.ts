@@ -2,6 +2,12 @@ import { drawTile, EngineObject, tile, timeDelta, vec2, Vector2 } from "littlejs
 
 const POWERUP_TIME = 3; // time in seconds before powerup disappears
 
+// TODO make items an interface with the data I need to pass to this Item class
+// then I can just have a list of items in a settings file or something 
+// when a bug dies, instead of the bug spawning the item, emit an event which 
+// I listen for in main. When the event happens, pick randomly from the list of items
+// and create a new Item
+
 export class Item extends EngineObject {
     private timeSinceDrop: number;
 
