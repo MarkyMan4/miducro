@@ -175,6 +175,10 @@ function gameInit()
     // setup the game
     LJS.setCanvasFixedSize(vec2(1920, 1080));
     LJS.setCanvasClearColor(backgroundColor);
+    
+    // disable this so WASD can be used for moving and arrow keys for shooting. WASD is explicitly mapped
+    // when getting key direction
+    LJS.setInputWASDEmulateDirection(false);
 
     // draw wall on all four sides just off the screen - in order: top, bottom, left, right
     new Wall(vec2(0, (LJS.canvasFixedSize.y / LJS.cameraScale / 2) + 1), vec2(LJS.canvasFixedSize.x / LJS.cameraScale, 2));
@@ -253,8 +257,13 @@ function gameUpdate()
             player.fire(LJS.mousePos);
         }
 
+        let fireDirection = LJS.keyDirection('ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight');
+        if (fireDirection.x !== 0 || fireDirection.y !== 0) {
+            player.fire(player.pos.add(fireDirection));
+        }
+
         // set player move direction - wasd
-        player.moveDirection = LJS.keyDirection();
+        player.moveDirection = LJS.keyDirection('KeyW', 'KeyS', 'KeyA', 'KeyD');
 
         // remove bugs that have been destroyed
         for (let i = bugs.length - 1; i >= 0; i--) {

@@ -30,8 +30,11 @@ class Weapon {
 
     fire(startPos: Vector2, targetPos: Vector2) {
         this.timeSinceLastShot += timeDelta;
+
+        // normalize the rise and run from start to target then add that to start pos 
+        // to get the target to be used. This way when adding randomness to bullet direction, 
+        // it's not affected by the distance from the player to the mouse
         let target = startPos.add(targetPos.subtract(startPos).normalize(2));
-        console.log(target.distance(startPos))
 
         if (this.timeSinceLastShot >= this.fireRate) {
             soundEffects.shoot.play();
