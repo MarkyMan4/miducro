@@ -47,19 +47,31 @@ function spawnBugs(count: number) {
         }
 
         let isMegaBug = false;
+        let isFastBug = false;
         let size = vec2(0.75, 1);
+        let speed = settings.baseBugSpeed;
         let health = settings.baseBugHealth;
         let killItemChance = settings.baseBugKillItemChance;
         let tileIndex = settings.baseBugTileIndex;
 
         if (game.wave >= 5) {
-            // TODO parameterize chance to spawn megabug so it gets greater as wave increases
-            isMegaBug = LJS.rand(0, 1) < 0.1;
-
+            // TODO parameterize chance to spawn special bugs so it gets greater as wave increases
+            let randNum = LJS.rand(0, 1);
+            isMegaBug = randNum < 0.1;
             if (isMegaBug) {
                 size = vec2(3, 4);
+                speed = settings.megaBugSpeed;
                 health = settings.baseBugHealth * game.wave;
                 tileIndex = settings.megaBugTileIndex;
+            }
+
+            if (game.wave >= 10) {
+                isFastBug = randNum >= 0.1 && randNum < 0.2;
+                if (isFastBug) {
+                    speed = settings.fastBugSpeed;
+                    health = settings.baseBugHealth;
+                    tileIndex = settings.fastBugTileIndex;
+                }
             }
         }
 
@@ -67,7 +79,7 @@ function spawnBugs(count: number) {
             new Bug(
                 vec2(x, y),
                 size,
-                settings.baseBugSpeed,
+                speed,
                 gameBus,
                 health,
                 tileIndex,
@@ -187,17 +199,17 @@ function gameInit()
     upgradeMenu = new LJS.UIObject(LJS.mainCanvasSize.scale(0.5), vec2(600, 450));
     upgradeMenu.addChild(new LJS.UIText(vec2(0, -120), vec2(500, 75), 'Choose an upgrade', undefined, 'GameFont'));
 
-    upgrade1 = new LJS.UIButton(vec2(0, -10), vec2(300, 50));
+    upgrade1 = new LJS.UIButton(vec2(0, -10), vec2(400, 50));
     upgrade1.textHeight = 40;
     upgrade1.font = 'GameFont';
     upgradeMenu.addChild(upgrade1);
 
-    upgrade2 = new LJS.UIButton(vec2(0, 50), vec2(300, 50));
+    upgrade2 = new LJS.UIButton(vec2(0, 50), vec2(400, 50));
     upgrade2.textHeight = 40;
     upgrade2.font = 'GameFont';
     upgradeMenu.addChild(upgrade2);
 
-    upgrade3 = new LJS.UIButton(vec2(0, 110), vec2(300, 50));
+    upgrade3 = new LJS.UIButton(vec2(0, 110), vec2(400, 50));
     upgrade3.textHeight = 40;
     upgrade3.font = 'GameFont';
     upgradeMenu.addChild(upgrade3);

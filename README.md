@@ -45,7 +45,7 @@ todo
 - [ ] add item slot for player
 - [x] make bugs randomly drop items
 - [x] add mega bugs
-- [ ] add fast moving bugs
+- [x] add fast moving bugs
 - [x] GH action for deploying to pages
 - [ ] replace initial screen with a menu, include a way to see what different items do
 - [x] allow arrow keys for shooting in addition to mouse
