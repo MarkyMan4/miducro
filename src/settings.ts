@@ -9,7 +9,7 @@ const settings = {
     baseProjectilesPerShot: 1,
     baseProjectileSpeed: 0.5,
     baseBugSpeed: 0.1,
-    baseBugKillItemChance: 0.5,
+    baseBugKillItemChance: 0.05,
     baseBugHealth: 100,
     baseBugSpawnRate: 0.25,
     baseBugTileIndex: 0,
