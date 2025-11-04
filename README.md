@@ -49,3 +49,4 @@ todo
 - [x] GH action for deploying to pages
 - [ ] replace initial screen with a menu, include a way to see what different items do
 - [x] allow arrow keys for shooting in addition to mouse
+  - [ ] player should face whatever direction is being held

@@ -1,7 +1,7 @@
 import { drawTile, EngineObject, hsl, ParticleEmitter, rand, randInt, randSign, tile, vec2, Vector2 } from "littlejsengine";
 import Projectile from "./projectile";
 import soundEffects from "../sounds";
-import { Item, Bomb, PitchFork, Scythe } from "./items";
+import { Item, items } from "./items";
 import Wall from "./wall";
 import settings from "../settings";
 
@@ -13,8 +13,6 @@ class Bug extends EngineObject {
     public speed: number;
     private eventBus: EventTarget;
     private itemDropOnKillChance: number;
-    private itemDropOnHitChance: number;
-    private powerupOptions = [Bomb, PitchFork, Scythe];
 
     constructor(
         pos: Vector2,
@@ -24,7 +22,6 @@ class Bug extends EngineObject {
         health: number = settings.baseBugHealth,
         tileIndex: number = 0,
         itemDropOnKillChance: number = settings.baseBugKillItemChance,
-        itemDropOnHitChance: number = settings.baseBugHitItemChance,
     ) {
         super(pos, size);
         this.setCollision();
@@ -33,7 +30,6 @@ class Bug extends EngineObject {
         this.health = health;
         this.tileIndex = tileIndex;
         this.itemDropOnKillChance = itemDropOnKillChance;
-        this.itemDropOnHitChance = itemDropOnHitChance;
         this.targetPosition = vec2(0, 0);
     }
 
@@ -85,11 +81,6 @@ class Bug extends EngineObject {
         this.health -= damage;
         this.hitEffect();
 
-        if(rand(0, 1) < this.itemDropOnHitChance) {
-            const powerup = this.powerupOptions[randInt(this.powerupOptions.length)];
-            new powerup(this.pos, vec2(1));
-        }
-
         if (this.health <= 0) {
             soundEffects.bugKilled.play(); 
             this.kill();
@@ -98,8 +89,8 @@ class Bug extends EngineObject {
 
     kill() {
         if(rand(0, 1) < this.itemDropOnKillChance) {
-            const powerup = this.powerupOptions[randInt(this.powerupOptions.length)];
-            new powerup(this.pos, vec2(1));
+            const item = items[randInt(items.length)];
+            new Item(this.pos, vec2(1), item);
         }
 
         this.hitEffect();

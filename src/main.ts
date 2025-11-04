@@ -5,24 +5,16 @@ import { vec2, hsl } from 'littlejsengine';
 import Player from './gameObjects/player';
 import Bug from './gameObjects/bug';
 import Weapon from './gameObjects/weapon';
-import { type Upgrade, upgradeOptions } from './upgrades';
+import { type IUpgrade, upgradeOptions } from './upgrades';
 import soundEffects from './sounds';
 import settings from './settings';
 import Wall from './gameObjects/wall';
+import type { IGame } from './game';
+import type { IItemInfo } from './gameObjects/items';
 
-const backgroundColor = hsl(1.27, 0.51, 0.17);
-
-let player: Player;
-let bugs: Bug[] = [];
+let game: IGame;
 let gameBus = new EventTarget();
-
-let gameStarted = false;
-let wave = 0;
-let bugsSpawnedThisWave = 0;
-let waveInProgress = false; // I know a wave is over if enemiesSpawnedThis wave === enemiesToSpawn() and the length of the bugs array is 0
-let timeSinceBugSpawn = 0;
-let spawnRate = 0.25;
-let totalBugsKilled = 0;
+const backgroundColor = hsl(1.27, 0.51, 0.17);
 
 // UI
 let upgradeMenu: LJS.UIObject;
@@ -34,7 +26,7 @@ let eventTextDisplayedTime = 0;
 
 // calculate the number of enemies that should be spawned this wave 
 function bugsToSpawn(): number {
-    return wave * settings.baseEnemiesToSpawn;
+    return game.wave * settings.baseEnemiesToSpawn;
 }
 
 // spawn count bugs at random spots on the edge of the screen
@@ -58,22 +50,20 @@ function spawnBugs(count: number) {
         let size = vec2(0.75, 1);
         let health = settings.baseBugHealth;
         let killItemChance = settings.baseBugKillItemChance;
-        let hitItemChance = settings.baseBugHitItemChance;
         let tileIndex = settings.baseBugTileIndex;
 
-        if (wave > 5) {
+        if (game.wave >= 5) {
             // TODO parameterize chance to spawn megabug so it gets greater as wave increases
             isMegaBug = LJS.rand(0, 1) < 0.1;
 
             if (isMegaBug) {
                 size = vec2(3, 4);
-                health = settings.baseBugHealth * wave;
-                hitItemChance = 0.05;
+                health = settings.baseBugHealth * game.wave;
                 tileIndex = settings.megaBugTileIndex;
             }
         }
 
-        bugs.push(
+        game.bugs.push(
             new Bug(
                 vec2(x, y),
                 size,
@@ -82,7 +72,6 @@ function spawnBugs(count: number) {
                 health,
                 tileIndex,
                 killItemChance,
-                hitItemChance,
             )
         );
     }
@@ -90,12 +79,12 @@ function spawnBugs(count: number) {
 
 function startNextWave() {
     upgradeMenu.visible = false;
-    waveInProgress = true;
-    bugsSpawnedThisWave = 0;
-    wave++;
+    game.waveInProgress = true;
+    game.bugsSpawnedThisWave = 0;
+    game.wave++;
 
     // pick three random options for the upgrade menu to show at the end of this wave
-    const options: Upgrade[] = [];
+    const options: IUpgrade[] = [];
     while (options.length < 3) {
         const randOption = upgradeOptions[Math.floor(Math.random() * upgradeOptions.length)];
         if (!options.includes(randOption)) {
@@ -103,22 +92,22 @@ function startNextWave() {
         }
     }
 
-    const onUpgradeSelect = (weapon: Weapon, upgradeFunc: (weapon: Weapon) => void) => {
+    const onUpgradeSelect = (upgradeFunc: (player: Player) => void) => {
         soundEffects.upgrade.play();
-        upgradeFunc(weapon);
+        upgradeFunc(game.player);
         startNextWave();
     }
 
     upgrade1.text = options[0].displayName;
     upgrade2.text = options[1].displayName;
     upgrade3.text = options[2].displayName;
-    upgrade1.onClick = () => onUpgradeSelect(player.weapon, options[0].upgradeFunc);
-    upgrade2.onClick = () => onUpgradeSelect(player.weapon, options[1].upgradeFunc);
-    upgrade3.onClick = () => onUpgradeSelect(player.weapon, options[2].upgradeFunc);
+    upgrade1.onClick = () => onUpgradeSelect(options[0].upgradeFunc);
+    upgrade2.onClick = () => onUpgradeSelect(options[1].upgradeFunc);
+    upgrade3.onClick = () => onUpgradeSelect(options[2].upgradeFunc);
 }
 
-function initializePlayer() {
-    player = new Player(
+function createPlayer() {
+    return new Player(
         LJS.cameraPos,
         vec2(2, 1.5),
         new Weapon(
@@ -134,38 +123,31 @@ function initializePlayer() {
 }
 
 function restartGame() {
-    bugs.forEach(b => b.destroy());
-    bugs = [];
-    initializePlayer();
-    wave = 0;
-    bugsSpawnedThisWave = 0;
-    waveInProgress = false;
-    timeSinceBugSpawn = 0;
-    totalBugsKilled = 0;
+    game.bugs.forEach(b => b.destroy());
+    game = {
+        player: createPlayer(),
+        bugs: [],
+        gameStarted: false,
+        wave: 0,
+        bugsSpawnedThisWave: 0,
+        waveInProgress: false,
+        timeSinceBugSpawn: 0,
+        spawnRate: 0.25,
+        totalBugsKilled: 0,
+    }
+
     startNextWave();
 }
 
 gameBus.addEventListener('bugkill', () => {
-    totalBugsKilled++;
+    game.totalBugsKilled++;
 });
 
-gameBus.addEventListener('bomb', () => {
-    eventText = 'Bug Bomb';
+gameBus.addEventListener('itempickup', (event: CustomEventInit<IItemInfo>) => {
+    eventText = event.detail?.eventText || '';
     eventTextDisplayedTime = 0;
-    soundEffects.bombPickup.play();
-    bugs.forEach(bug => bug.kill());
-});
-
-gameBus.addEventListener('pitchfork', () => {
-    eventText = 'Mass Damage';
-    eventTextDisplayedTime = 0;
-    bugs.forEach(bug => bug.hit(settings.baseBugHealth / 2));
-});
-
-gameBus.addEventListener('scythe', () => {
-    eventText = 'Reap What You Sow';
-    eventTextDisplayedTime = 0;
-    bugs.forEach(bug => bug.hit(totalBugsKilled));
+    event.detail?.soundEffect?.play();
+    event.detail?.effect(game);
 });
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -186,7 +168,17 @@ function gameInit()
     new Wall(vec2(-(LJS.canvasFixedSize.x / LJS.cameraScale / 2) - 1, 0), vec2(2, LJS.canvasFixedSize.y / LJS.cameraScale));
     new Wall(vec2((LJS.canvasFixedSize.x / LJS.cameraScale / 2) + 1, 0), vec2(2, LJS.canvasFixedSize.y / LJS.cameraScale));
 
-    initializePlayer();
+    game = {
+        player: createPlayer(),
+        bugs: [],
+        gameStarted: false,
+        wave: 0,
+        bugsSpawnedThisWave: 0,
+        waveInProgress: false, // I know a wave is over if enemiesSpawnedThis wave === enemiesToSpawn() and the length of the bugs array is 0
+        timeSinceBugSpawn: 0,
+        spawnRate: settings.baseBugSpawnRate,
+        totalBugsKilled: 0,
+    }
 
     // create the upgrade menu and hide it, will show again at the end of the round
     new LJS.UISystemPlugin();
@@ -218,9 +210,9 @@ function gameUpdate()
 {
     // called every frame at 60 frames per second
     // handle input and update the game state
-    if (!gameStarted) {
+    if (!game.gameStarted) {
         if(LJS.keyWasPressed('Space')) {
-            gameStarted = true;
+            game.gameStarted = true;
             startNextWave();
         }
 
@@ -231,8 +223,8 @@ function gameUpdate()
         eventTextDisplayedTime += LJS.timeDelta;
     }
 
-    if (player.health <= 0) {
-        player.destroy();
+    if (game.player.health <= 0) {
+        game.player.destroy();
 
         if(LJS.keyWasPressed('Space')) {
             restartGame();
@@ -241,39 +233,43 @@ function gameUpdate()
         return;
     }
 
-    if (gameStarted && waveInProgress) {
+    if (game.gameStarted && game.waveInProgress) {
         // spawn bugs
-        timeSinceBugSpawn += LJS.timeDelta;
+        game.timeSinceBugSpawn += LJS.timeDelta;
 
-        if (timeSinceBugSpawn >= spawnRate && bugsSpawnedThisWave < bugsToSpawn()) {
+        if (game.timeSinceBugSpawn >= game.spawnRate && game.bugsSpawnedThisWave < bugsToSpawn()) {
             let bugsToSpawn = 2;
             spawnBugs(bugsToSpawn);
-            bugsSpawnedThisWave += bugsToSpawn;
-            timeSinceBugSpawn = 0;
+            game.bugsSpawnedThisWave += bugsToSpawn;
+            game.timeSinceBugSpawn = 0;
         }
 
         // handle shooting
         if (LJS.mouseIsDown(0)) {
-            player.fire(LJS.mousePos);
+            game.player.fire(LJS.mousePos);
+            // player.angle = player.pos.subtract(LJS.mousePos).angle() + (Math.PI / 2);
         }
 
         let fireDirection = LJS.keyDirection('ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight');
         if (fireDirection.x !== 0 || fireDirection.y !== 0) {
-            player.fire(player.pos.add(fireDirection));
+            game.player.fire(game.player.pos.add(fireDirection));
+            
+            // this doesn't work right now because the update function for player always makes player point toward mouse
+            game.player.angle = fireDirection.angle() - (Math.PI / 2);
         }
 
         // set player move direction - wasd
-        player.moveDirection = LJS.keyDirection('KeyW', 'KeyS', 'KeyA', 'KeyD');
+        game.player.moveDirection = LJS.keyDirection('KeyW', 'KeyS', 'KeyA', 'KeyD');
 
         // remove bugs that have been destroyed
-        for (let i = bugs.length - 1; i >= 0; i--) {
-            if(bugs[i].destroyed) {
-                bugs.splice(i, 1);
+        for (let i = game.bugs.length - 1; i >= 0; i--) {
+            if(game.bugs[i].destroyed) {
+                game.bugs.splice(i, 1);
             }
         }
 
         // bugs move toward player
-        bugs.forEach(bug => bug.targetPosition = player.pos);
+        game.bugs.forEach(bug => bug.targetPosition = game.player.pos);
     }
 }
 
@@ -304,7 +300,7 @@ function gameRenderPost()
     // draw effects or hud that appear above all objects
     const screenCenter = LJS.mainCanvasSize.scale(0.5);
 
-    if (!gameStarted) {
+    if (!game.gameStarted) {
         LJS.drawRect(vec2(0, -3), vec2(30, 10), hsl(0, 0, 0));
 
         displayText('Press space to start', screenCenter, 70);
@@ -314,9 +310,9 @@ function gameRenderPost()
         return;
     }
 
-    if (player.health <= 0) {
+    if (game.player.health <= 0) {
         displayText('Game Over', screenCenter, 70);
-        displayText(`You survived until wave ${wave}`, vec2(screenCenter.x, screenCenter.y + 100), 50);
+        displayText(`You survived until wave ${game.wave}`, vec2(screenCenter.x, screenCenter.y + 100), 50);
         displayText('Press space to restart', vec2(screenCenter.x, screenCenter.y + 150), 50);
     }
 
@@ -332,13 +328,13 @@ function gameRenderPost()
 
 
     // show the wave number and player health
-    displayText(`Wave: ${wave}`, vec2(20, 40), 50, 'left');
-    displayText(`Health: ${player.health}`, vec2(20, 90), 50, 'left');
-    displayText(`Bugs Killed: ${totalBugsKilled}`, vec2(20, 140), 50, 'left');
+    displayText(`Wave: ${game.wave}`, vec2(20, 40), 50, 'left');
+    displayText(`Health: ${game.player.health}`, vec2(20, 90), 50, 'left');
+    displayText(`Bugs Killed: ${game.totalBugsKilled}`, vec2(20, 140), 50, 'left');
 
     // check if wave is over and display upgrade menu
-    if (wave > 0 && bugs.length === 0 && bugsSpawnedThisWave >= bugsToSpawn()) {
-        waveInProgress = false;
+    if (game.wave > 0 && game.bugs.length === 0 && game.bugsSpawnedThisWave >= bugsToSpawn()) {
+        game.waveInProgress = false;
         upgradeMenu.pos = screenCenter;
         upgradeMenu.visible = true;
     }

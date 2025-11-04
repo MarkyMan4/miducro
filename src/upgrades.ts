@@ -1,32 +1,36 @@
-import type Weapon from "./gameObjects/weapon";
+import type Player from "./gameObjects/player";
 
-export interface Upgrade {
+export interface IUpgrade {
     displayName: string;
-    upgradeFunc: (weapon: Weapon) => void;
+    upgradeFunc: (player: Player) => void;
 }
 
 // TODO have rare end legendary upgrades
 // when determing upgrades to show in the menu, pick from this list like normal, then have a 10% chance to 
 // swap one out with a rare upgrade and 5% chance to swap one out with a legendary
-export const upgradeOptions: Upgrade[] = [
+export const upgradeOptions: IUpgrade[] = [
     {
         displayName: 'damage up',
-        upgradeFunc: (weapon: Weapon) => weapon.damage += 10,
+        upgradeFunc: (player: Player) => player.weapon.damage += 10,
     },
     {
         displayName: 'fire rate up',
-        upgradeFunc: (weapon: Weapon) => weapon.fireRate -= 0.05,
+        upgradeFunc: (player: Player) => player.weapon.fireRate -= 0.05,
     },
     {
         displayName: 'range up',
-        upgradeFunc: (weapon: Weapon) => weapon.range += 10,
+        upgradeFunc: (player: Player) => player.weapon.range += 10,
     },
     {
         displayName: 'shot speed up',
-        upgradeFunc: (weapon: Weapon) => weapon.projectileSpeed += 0.1,
+        upgradeFunc: (player: Player) => player.weapon.projectileSpeed += 0.1,
     },
     {
         displayName: 'more bullets',
-        upgradeFunc: (weapon: Weapon) => weapon.projectilesPerShot++,
+        upgradeFunc: (player: Player) => player.weapon.projectilesPerShot++,
+    },
+    {
+        displayName: 'move speed up',
+        upgradeFunc: (player: Player) => player.speed += 0.1,
     },
 ];

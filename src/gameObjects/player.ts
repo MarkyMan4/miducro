@@ -4,7 +4,7 @@ import settings from "../settings";
 import soundEffects from "../sounds";
 import Projectile from "./projectile";
 import Bug from "./bug";
-import { Bomb, Scythe, PitchFork } from "./items";
+import { Item } from "./items";
 
 class Player extends EngineObject {
     public moveDirection: Vector2;
@@ -66,21 +66,10 @@ class Player extends EngineObject {
             }
         }
 
-        if (object instanceof Bomb) {
-            const bombEvent = new CustomEvent('bomb');
-            this.eventBus.dispatchEvent(bombEvent);
-            object.destroy();
-        }
-
-        if (object instanceof PitchFork) {
-            const shovelEvent = new CustomEvent('pitchfork');
-            this.eventBus.dispatchEvent(shovelEvent);
-            object.destroy();
-        }
-    
-        if (object instanceof Scythe) {
-            const shovelEvent = new CustomEvent('scythe');
-            this.eventBus.dispatchEvent(shovelEvent);
+        if (object instanceof Item) {
+            const item = object as Item;
+            const event = new CustomEvent('itempickup', {detail: item.itemInfo});
+            this.eventBus.dispatchEvent(event);
             object.destroy();
         }
     
