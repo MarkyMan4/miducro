@@ -109,7 +109,7 @@ function startNextWave() {
 function createPlayer() {
     return new Player(
         LJS.cameraPos,
-        vec2(2, 1.5),
+        vec2(1.5, 1),
         new Weapon(
             settings.baseDamage,
             settings.baseRange,

@@ -46,10 +46,10 @@ class Player extends EngineObject {
 
     render() {
         if (this.recoverTimer.elapsed()) {
-            drawTile(this.pos, this.size, this.tileInfo, undefined, this.angle);
+            drawTile(this.pos, vec2(2, 1.5), this.tileInfo, undefined, this.angle);
         }
         else {
-            drawTile(this.pos, this.size, this.tileInfo, hsl(1, 1, 1, 0.5), this.angle);
+            drawTile(this.pos, vec2(2, 1.5), this.tileInfo, hsl(1, 1, 1, 0.5), this.angle);
         }
     }
 
