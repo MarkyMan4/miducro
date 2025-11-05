@@ -2,6 +2,7 @@ import { drawTile, EngineObject, Sound, tile, timeDelta, vec2, Vector2 } from "l
 import type { IGame } from "../game";
 import settings from "../settings";
 import soundEffects from "../sounds";
+import Wall from "./wall";
 
 export interface IItemInfo {
     name: string,
@@ -69,6 +70,13 @@ export class Item extends EngineObject {
         if (this.timeSinceDrop >= settings.itemLiveTime) {
             this.destroy();
         }
+    }
+
+    collideWithObject(object: EngineObject): boolean {
+        if (object instanceof Wall) {
+            return false;
+        }
+        return super.collideWithObject(object);
     }
 
     render() {
