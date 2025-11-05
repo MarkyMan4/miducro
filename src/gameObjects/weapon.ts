@@ -1,4 +1,4 @@
-import { rand, randSign, timeDelta, vec2, type Color, type Vector2 } from "littlejsengine";
+import { rand, randInt, randSign, timeDelta, vec2, type Color, type Vector2 } from "littlejsengine";
 import Projectile from "./projectile";
 import soundEffects from "../sounds";
 
@@ -59,19 +59,23 @@ class Weapon {
         if (this.timeSinceLastShot >= this.fireRate + this.tempStatBoosts.fireRate) {
             soundEffects.shoot.play();
             for (let i = 0; i < this.projectilesPerShot + this.tempStatBoosts.projectilesPerShot; i++) {
+                let modifiedTarget = target.copy();
+                let speed = this.projectileSpeed;
+
                 // for each additional projectile, add some randomization so the bullets aren't all stacked up
                 if (i > 0) {
-                    let randX = rand(0.1 * randSign(), 0.2 * randSign());
-                    let randY = rand(0.1 * randSign(), 0.2 * randSign());
-                    target = target.copy().add(vec2(randX, randY));
+                    let randX = rand(0.4 * randSign(), 0.4 * randSign());
+                    let randY = rand(0.4 * randSign(), 0.4 * randSign());
+                    modifiedTarget = modifiedTarget.add(vec2(randX, randY));
+                    speed += randInt(2) === 0 ? 0 : 0.01 * randSign();
                 }
                 new Projectile(
                     startPos,
                     (this.damage + this.tempStatBoosts.damage) / 100,
-                    target,
+                    modifiedTarget,
                     (this.damage + this.tempStatBoosts.damage),
                     this.range,
-                    this.projectileSpeed,
+                    speed,
                     this.projectileColor
                 );
             }
