@@ -39,6 +39,14 @@ export const items: IItemInfo[] = [
             game.bugs.forEach(bug => bug.hit(game.totalBugsKilled));
         },
     },
+    {
+        name: 'arrow',
+        textureIndex: settings.arrowTextureIndex,
+        eventText: 'Shots Way Up',
+        effect: (game: IGame) => {
+            game.player.weapon.tempStatBoosts.projectilesPerShot += 10;
+        },
+    },
 ]
 
 export class Item extends EngineObject {

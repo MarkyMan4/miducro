@@ -24,6 +24,7 @@ const settings = {
     bombTextureIndex: 2,
     pitchforkTextureIndex: 3,
     scytheTextureIndex: 4,
+    arrowTextureIndex: 5,
 }
 
 export default settings;

@@ -11,6 +11,7 @@
     - invincibility
     - items (make items usable by pressing 'e')
     - kill bug on collision
+    - temporary stat boosts (e.g. damage way up until end of wave)
 - choose an upgrade
     - menu that randomly displays the choices:
         - increase fire rate
@@ -20,6 +21,7 @@
         - x% chance to increase some stat and decrease another
         - shotgun - shoots a spread but decreases fire rate significantly
         - splash damage
+        - elemental damage
 
 ---
 
@@ -43,6 +45,8 @@ todo
 - [x] add items
 - [x] bug - once I build, collisions aren't working
 - [ ] add item slot for player
+  - make it so that in the upgrade screen, there is a random chance that the player can choose to take an item
+    instead of an upgrade
 - [x] make bugs randomly drop items
 - [x] add mega bugs
 - [x] add fast moving bugs
@@ -50,3 +54,5 @@ todo
 - [ ] replace initial screen with a menu, include a way to see what different items do
 - [x] allow arrow keys for shooting in addition to mouse
   - [ ] player should face whatever direction is being held
+- [ ] continuation code - encode the state of the game in some string that the player can enter on a new 
+      run to pick up from where they ended but with full health

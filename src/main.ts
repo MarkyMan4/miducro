@@ -90,6 +90,9 @@ function spawnBugs(count: number) {
 }
 
 function startNextWave() {
+    // reset temporary stat boosts
+    game.player.weapon.resetStatBoosts();
+
     upgradeMenu.visible = false;
     game.waveInProgress = true;
     game.bugsSpawnedThisWave = 0;
@@ -134,8 +137,7 @@ function createPlayer() {
     );
 }
 
-function restartGame() {
-    game.bugs.forEach(b => b.destroy());
+function resetGame() {
     game = {
         player: createPlayer(),
         bugs: [],
@@ -147,7 +149,11 @@ function restartGame() {
         spawnRate: 0.25,
         totalBugsKilled: 0,
     }
+}
 
+function restartGame() {
+    game.bugs.forEach(b => b.destroy());
+    resetGame();
     startNextWave();
 }
 
@@ -180,17 +186,7 @@ function gameInit()
     new Wall(vec2(-(LJS.canvasFixedSize.x / LJS.cameraScale / 2) - 1, 0), vec2(2, LJS.canvasFixedSize.y / LJS.cameraScale));
     new Wall(vec2((LJS.canvasFixedSize.x / LJS.cameraScale / 2) + 1, 0), vec2(2, LJS.canvasFixedSize.y / LJS.cameraScale));
 
-    game = {
-        player: createPlayer(),
-        bugs: [],
-        gameStarted: false,
-        wave: 0,
-        bugsSpawnedThisWave: 0,
-        waveInProgress: false, // I know a wave is over if enemiesSpawnedThis wave === enemiesToSpawn() and the length of the bugs array is 0
-        timeSinceBugSpawn: 0,
-        spawnRate: settings.baseBugSpawnRate,
-        totalBugsKilled: 0,
-    }
+    resetGame();
 
     // create the upgrade menu and hide it, will show again at the end of the round
     new LJS.UISystemPlugin();
@@ -365,6 +361,7 @@ LJS.engineInit(
         'survivor1_machine.png',
         'items/bomb.png',
         'items/pitchfork.png',
-        'items/scythe.png'
+        'items/scythe.png',
+        'items/arrow.png',
     ],
 );
