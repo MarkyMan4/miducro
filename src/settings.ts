@@ -19,6 +19,7 @@ const settings = {
     fastBugTileIndex: 9,
     basePlayerSpeed: 0.25,
     playerDamageCooldown: 2,
+    playerItemCapacity: 1,
     projectileColor: hsl(0.175, 0.64, 0.6),
     itemLiveTime: 3,
     bombTextureIndex: 2,

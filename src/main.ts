@@ -266,6 +266,11 @@ function gameUpdate()
             game.player.angle = fireDirection.angle() - (Math.PI / 2);
         }
 
+        // handle using item
+        if (LJS.keyWasReleased('KeyE')) {
+            game.player.useItem();
+        }
+
         // set player move direction - wasd
         game.player.moveDirection = LJS.keyDirection('KeyW', 'KeyS', 'KeyA', 'KeyD');
 
@@ -314,6 +319,7 @@ function gameRenderPost()
         displayText('Press space to start', screenCenter, 70);
         displayText('WASD to move', vec2(screenCenter.x, screenCenter.y + 100), 50);
         displayText('Point and click to shoot', vec2(screenCenter.x, screenCenter.y + 160), 50);
+        displayText('E to use items', vec2(screenCenter.x, screenCenter.y + 220), 50);
 
         return;
     }
@@ -339,6 +345,10 @@ function gameRenderPost()
     displayText(`Wave: ${game.wave}`, vec2(20, 40), 50, 'left');
     displayText(`Health: ${game.player.health}`, vec2(20, 90), 50, 'left');
     displayText(`Bugs Killed: ${game.totalBugsKilled}`, vec2(20, 140), 50, 'left');
+
+    game.player.heldItems.forEach((item, idx) => {
+        LJS.drawTile(vec2(-29 + (idx * 1.5), -15), vec2(1.5), item.tileInfo);
+    })
 
     // check if wave is over and display upgrade menu
     if (game.wave > 0 && game.bugs.length === 0 && game.bugsSpawnedThisWave >= bugsToSpawn()) {

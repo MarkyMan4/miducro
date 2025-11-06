@@ -33,4 +33,8 @@ export const upgradeOptions: IUpgrade[] = [
         displayName: 'move speed up',
         upgradeFunc: (player: Player) => player.speed += 0.1,
     },
+    {
+        displayName: 'item capacity up',
+        upgradeFunc: (player: Player) => player.itemCapacity++,
+    },
 ];

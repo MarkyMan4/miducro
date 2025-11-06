@@ -11,6 +11,8 @@ class Player extends EngineObject {
     public weapon: Weapon;
     public health: number;
     public speed: number;
+    public heldItems: Item[];
+    public itemCapacity: number;
     private recoverTimer: Timer;
     private eventBus: EventTarget;
 
@@ -24,6 +26,8 @@ class Player extends EngineObject {
         this.health = 3;
         this.recoverTimer = new Timer(0);
         this.speed = settings.basePlayerSpeed;
+        this.itemCapacity = settings.playerItemCapacity;
+        this.heldItems = [];
         this.setCollision();
     }
 
@@ -53,6 +57,17 @@ class Player extends EngineObject {
         }
     }
 
+    useItem() {
+        if (this.heldItems.length === 0) {
+            return;
+        }
+
+        const item = this.heldItems[0];
+        const event = new CustomEvent('itempickup', {detail: item.itemInfo});
+        this.eventBus.dispatchEvent(event);
+        this.heldItems.splice(0, 1); // remove the item once it has been used
+    }
+
     collideWithObject(object: EngineObject): boolean {
         if (object instanceof Projectile) {
             return false;
@@ -67,9 +82,13 @@ class Player extends EngineObject {
         }
 
         if (object instanceof Item) {
+            // pickup item if we have room
+            if (this.heldItems.length >= this.itemCapacity) {
+                return false;
+            }
+
             const item = object as Item;
-            const event = new CustomEvent('itempickup', {detail: item.itemInfo});
-            this.eventBus.dispatchEvent(event);
+            this.heldItems.push(item);
             object.destroy();
         }
     
