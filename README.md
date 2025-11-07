@@ -1,3 +1,7 @@
+# Miducro
+
+Play [here](https://markyman4.github.io/miducro/)
+
 # Gameplay
 
 - wave starts
