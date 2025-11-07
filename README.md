@@ -44,9 +44,7 @@ todo
 - [x] game over screen
 - [x] add items
 - [x] bug - once I build, collisions aren't working
-- [ ] add item slot for player
-  - make it so that in the upgrade screen, there is a random chance that the player can choose to take an item
-    instead of an upgrade
+- [x] add item slot for player
 - [x] make bugs randomly drop items
 - [x] add mega bugs
 - [x] add fast moving bugs
@@ -56,3 +54,4 @@ todo
   - [ ] player should face whatever direction is being held
 - [ ] continuation code - encode the state of the game in some string that the player can enter on a new 
       run to pick up from where they ended but with full health
+- [x] get health back as upgrade

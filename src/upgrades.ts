@@ -30,8 +30,8 @@ export const upgradeOptions: IUpgrade[] = [
         upgradeFunc: (player: Player) => player.weapon.projectilesPerShot++,
     },
     {
-        displayName: 'move speed up',
-        upgradeFunc: (player: Player) => player.speed += 0.1,
+        displayName: 'restore health',
+        upgradeFunc: (player: Player) => player.health++,
     },
     {
         displayName: 'item capacity up',

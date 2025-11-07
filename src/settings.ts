@@ -21,7 +21,7 @@ const settings = {
     playerDamageCooldown: 2,
     playerItemCapacity: 1,
     projectileColor: hsl(0.175, 0.64, 0.6),
-    itemLiveTime: 3,
+    itemLiveTime: 5,
     bombTextureIndex: 2,
     pitchforkTextureIndex: 3,
     scytheTextureIndex: 4,
