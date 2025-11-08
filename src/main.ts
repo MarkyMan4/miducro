@@ -17,6 +17,9 @@ let gameBus = new EventTarget();
 const backgroundColor = hsl(1.27, 0.51, 0.17);
 
 // UI
+// let mainMenu = LJS.UIObject;
+// let howToPlayButton = LJS.UIButton;
+
 let upgradeMenu: LJS.UIObject;
 let upgrade1: LJS.UIButton;
 let upgrade2: LJS.UIButton;
@@ -327,7 +330,7 @@ function gameRenderPost()
     if (game.player.health <= 0) {
         displayText('Game Over', screenCenter, 70);
         displayText(`You survived until wave ${game.wave}`, vec2(screenCenter.x, screenCenter.y + 100), 50);
-        displayText('Press space to restart', vec2(screenCenter.x, screenCenter.y + 150), 50);
+        displayText('Press space to continue', vec2(screenCenter.x, screenCenter.y + 150), 50);
     }
 
     if (eventText !== '') {
