@@ -35,7 +35,7 @@ export const items: IItemInfo[] = [
     {
         name: 'scythe',
         textureIndex: settings.scytheTextureIndex,
-        eventText: 'Reap What You Sow',
+        eventText: 'Damage Dealt = Bugs Killed',
         effect: (game: IGame) => {
             game.bugs.forEach(bug => bug.hit(game.totalBugsKilled));
         },
@@ -46,6 +46,14 @@ export const items: IItemInfo[] = [
         eventText: 'Shots Way Up',
         effect: (game: IGame) => {
             game.player.weapon.tempStatBoosts.projectilesPerShot += 10;
+        },
+    },
+    {
+        name: 'water',
+        textureIndex: settings.waterTextureIndex,
+        eventText: 'Temporary Invincibility',
+        effect: (game: IGame) => {
+            game.player.makeInvincible(5);
         },
     },
 ]

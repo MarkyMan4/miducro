@@ -26,6 +26,7 @@ const settings = {
     pitchforkTextureIndex: 3,
     scytheTextureIndex: 4,
     arrowTextureIndex: 5,
+    waterTextureIndex: 6,
 }
 
 export default settings;

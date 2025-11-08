@@ -68,6 +68,10 @@ class Player extends EngineObject {
         this.heldItems.splice(0, 1); // remove the item once it has been used
     }
 
+    makeInvincible(duration: number) {
+        this.recoverTimer.set(duration);
+    }
+
     collideWithObject(object: EngineObject): boolean {
         if (object instanceof Projectile) {
             return false;
@@ -77,7 +81,7 @@ class Player extends EngineObject {
             if (this.recoverTimer.elapsed()) {
                 soundEffects.playerHit.play();
                 this.health--;
-                this.recoverTimer.set(settings.playerDamageCooldown);
+                this.makeInvincible(settings.playerDamageCooldown);
             }
         }
 

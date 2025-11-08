@@ -373,5 +373,6 @@ LJS.engineInit(
         'items/pitchfork.png',
         'items/scythe.png',
         'items/arrow.png',
+        'items/full_bucket.png',
     ],
 );
