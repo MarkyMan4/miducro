@@ -19,7 +19,7 @@ export const upgradeOptions: IUpgrade[] = [
     },
     {
         displayName: 'range up',
-        upgradeFunc: (player: Player) => player.weapon.range += 10,
+        upgradeFunc: (player: Player) => player.weapon.range += 5,
     },
     {
         displayName: 'shot speed up',

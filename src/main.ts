@@ -105,6 +105,12 @@ function startNextWave() {
     const options: IUpgrade[] = [];
     while (options.length < 3) {
         const randOption = upgradeOptions[Math.floor(Math.random() * upgradeOptions.length)];
+
+        // don't show fire rate option if fire rate is already maxed out
+        if (randOption.displayName === 'fire rate up' && game.player.weapon.fireRate <= settings.minFireRate) {
+            continue;
+        }
+
         if (!options.includes(randOption)) {
             options.push(randOption);
         }
