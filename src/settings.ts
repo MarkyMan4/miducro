@@ -15,6 +15,7 @@ const settings = {
     baseBugKillItemChance: 0.03,
     baseBugHealth: 100,
     baseBugSpawnRate: 0.25,
+    minBugSpawnRate: 0.1,
     baseBugTileIndex: 0,
     megaBugTileIndex: 6,
     fastBugTileIndex: 9,

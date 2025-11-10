@@ -101,6 +101,11 @@ function startNextWave() {
     game.bugsSpawnedThisWave = 0;
     game.wave++;
 
+    // incrase spawn rate after wave 25
+    if (game.wave >= 25 && game.spawnRate > settings.minBugSpawnRate) {
+        game.spawnRate -= 0.02;
+    }
+
     // pick three random options for the upgrade menu to show at the end of this wave
     const options: IUpgrade[] = [];
     while (options.length < 3) {
@@ -155,7 +160,7 @@ function resetGame() {
         bugsSpawnedThisWave: 0,
         waveInProgress: false,
         timeSinceBugSpawn: 0,
-        spawnRate: 0.25,
+        spawnRate: settings.baseBugSpawnRate,
         totalBugsKilled: 0,
     }
 }
